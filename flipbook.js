@@ -5,7 +5,7 @@
   var V = '4.4.168', B = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + V + '/build/';
   var lib;
   function pdfjs() { return lib || (lib = import(B + 'pdf.min.mjs').then(function (m) { m.GlobalWorkerOptions.workerSrc = B + 'pdf.worker.min.mjs'; return m; })); }
-  var INK = '#141317', PAPER = '#f7f6f9', RULE = '#dddae3', MUTED = '#7d7986', DESK = '#e9e7ee', ACC = 'oklch(0.6 0.22 293)';
+  var INK = '#141317', PAPER = '#f7f6f9', RULE = '#dddae3', MUTED = '#7d7986', DESK = '#efedf3', ACC = '#141317', CHIP = '#e9e7ee';
   var MONO = "'JetBrains Mono',ui-monospace,monospace", UI = "'Onest','Helvetica Neue',Helvetica,Arial,sans-serif";
   var st = document.createElement('style');
   st.textContent = [
@@ -15,8 +15,8 @@
     '.fb-r::-moz-range-track{height:3px;background:' + RULE + '}.fb-r::-moz-range-progress{height:3px;background:' + ACC + '}',
     '.fb-r::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:' + INK + ';border:2px solid #fff}',
     '.fb-b{transition:background .15s,color .15s,border-color .15s}.fb-b:hover:not(:disabled){background:' + INK + '!important;color:#fff!important;border-color:' + INK + '!important}',
-    '.fb-b:disabled{opacity:.35;cursor:default}',
-    '.fb-c:hover{background:#efedf3!important}',
+    '.fb-b:disabled{opacity:.35;cursor:default}.fb-dl:hover{background:#2e2c34!important;color:#fff!important}',
+    '.fb-c:hover{background:#f3f2f6!important}',
     '.fb-s::-webkit-scrollbar{width:8px;height:8px}.fb-s::-webkit-scrollbar-thumb{background:#c9c5d1}.fb-s::-webkit-scrollbar-track{background:transparent}'
   ].join('');
   document.head.appendChild(st);
@@ -29,7 +29,7 @@
     return e;
   }
   function btn(label, extra, attrs) {
-    return h('button', Object.assign({ height: '36px', minWidth: '36px', padding: '0 12px', border: '1px solid ' + RULE, background: '#fff', color: INK, font: '500 11px/1 ' + MONO, letterSpacing: '.06em', textTransform: 'uppercase', cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }, extra || {}), Object.assign({ class: 'fb-b', type: 'button', text: label }, attrs || {}));
+    return h('button', Object.assign({ height: '30px', minWidth: '30px', padding: '0 12px', border: 0, borderRadius: '999px', background: CHIP, color: INK, font: '600 12px/1 ' + UI, letterSpacing: '-.01em', cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }, extra || {}), Object.assign({ class: 'fb-b', type: 'button', text: label }, attrs || {}));
   }
   function clean(t) {
     return t.replace(/\s+/g, ' ').replace(/ ([,.:;!?»)])/g, '$1').replace(/([«(]) /g, '$1').replace(/ - /g, '-').replace(/(\S)- (\S)/g, '$1-$2').trim();
@@ -45,30 +45,30 @@
     root.__fb = S; instances.push(S);
     var baseH = root.getAttribute('data-height') || 'min(88vh,1000px)';
     root.innerHTML = '';
-    Object.assign(root.style, { position: 'relative', display: 'flex', flexDirection: 'column', background: PAPER, border: '1px solid ' + RULE, fontFamily: UI, color: INK, userSelect: 'none' });
+    Object.assign(root.style, { position: 'relative', display: 'flex', flexDirection: 'column', background: '#fff', border: 0, borderRadius: '24px', overflow: 'hidden', fontFamily: UI, color: INK, userSelect: 'none' });
 
     /* toolbar */
-    var chBtn = btn('Главы', { gap: '10px' });
-    chBtn.appendChild(h('span', { fontSize: '9px' }, { text: '▾' }));
-    var chNow = h('div', { flex: '1 1 160px', minWidth: 0, display: 'flex', alignItems: 'baseline', gap: '10px', padding: '0 4px', overflow: 'hidden' });
-    var chNum = h('span', { font: '500 10.5px/1 ' + MONO, color: ACC, whiteSpace: 'nowrap' });
-    var chTitle = h('span', { fontSize: '14px', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' });
-    chNow.appendChild(chNum); chNow.appendChild(chTitle);
-    var prevB = btn('←', { padding: 0, width: '36px', borderRadius: '999px' }, { 'aria-label': 'Назад' });
-    var nextB = btn('→', { padding: 0, width: '36px', borderRadius: '999px' }, { 'aria-label': 'Вперёд' });
-    var counter = h('span', { font: '500 12px/1 ' + MONO, minWidth: '78px', textAlign: 'center', whiteSpace: 'nowrap' }, { text: '— / —' });
-    var zOut = btn('−', { padding: 0, width: '36px' }, { 'aria-label': 'Уменьшить' });
-    var zLbl = h('span', { font: '500 11px/1 ' + MONO, minWidth: '46px', textAlign: 'center', color: MUTED }, { text: '100%' });
-    var zIn = btn('+', { padding: 0, width: '36px' }, { 'aria-label': 'Увеличить' });
+    var chBtn = btn('', { flex: '1 1 auto', minWidth: 0, justifyContent: 'flex-start', gap: '8px', padding: '0 12px 0 14px' }, { title: 'Содержание' });
+    var chNow = h('div', { display: 'none' });
+    var chNum = h('span', { font: '500 10px/1 ' + MONO, color: MUTED, whiteSpace: 'nowrap' });
+    var chTitle = h('span', { fontSize: '12.5px', fontWeight: 600, letterSpacing: '-.015em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' });
+    chTitle.style.flex = '1 1 auto'; chTitle.style.minWidth = 0; chTitle.style.textAlign = 'left';
+    chBtn.appendChild(chNum); chBtn.appendChild(chTitle); chBtn.appendChild(h('span', { fontSize: '9px', color: MUTED, flex: '0 0 auto' }, { text: '▾' }));
+    var prevB = btn('←', { padding: 0, width: '30px' }, { 'aria-label': 'Назад' });
+    var nextB = btn('→', { padding: 0, width: '30px' }, { 'aria-label': 'Вперёд' });
+    var counter = h('span', { font: '600 12px/1 ' + UI, minWidth: '58px', textAlign: 'right', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums', color: INK }, { text: '— / —' });
+    var zOut = btn('−', { padding: 0, width: '30px' }, { 'aria-label': 'Уменьшить' });
+    var zLbl = h('span', { font: '500 11.5px/1 ' + UI, minWidth: '38px', textAlign: 'center', color: MUTED }, { text: '100%' });
+    var zIn = btn('+', { padding: 0, width: '30px' }, { 'aria-label': 'Увеличить' });
     var zoomG = h('div', { display: 'flex', alignItems: 'center', gap: '4px' }, null, [zOut, zLbl, zIn]);
     var viewB = btn('Разворот', null, { title: 'Режим просмотра' });
-    var fsB = btn('⤢', { padding: 0, width: '36px' }, { 'aria-label': 'На весь экран', title: 'На весь экран' });
-    var dl = h('a', { height: '36px', padding: '0 14px', display: 'inline-flex', alignItems: 'center', background: INK, color: '#fff', font: '500 11px/1 ' + MONO, letterSpacing: '.06em', textTransform: 'uppercase', textDecoration: 'none', whiteSpace: 'nowrap' }, { href: url, download: '', target: '_blank', rel: 'noopener', text: 'PDF ↓' });
-    var nav = h('div', { display: 'flex', alignItems: 'center', gap: '6px' }, null, [prevB, counter, nextB]);
-    var bar = h('div', { position: 'relative', zIndex: 4, display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px', borderBottom: '1px solid ' + RULE, background: PAPER, flexWrap: 'wrap' }, null, [chBtn, chNow, nav, zoomG, viewB, fsB, dl]);
+    var fsB = btn('⤢', { padding: 0, width: '30px' }, { 'aria-label': 'На весь экран', title: 'На весь экран' });
+    var dl = h('a', { height: '30px', width: '30px', justifyContent: 'center', padding: 0, display: 'inline-flex', alignItems: 'center', borderRadius: '999px', background: INK, color: '#fff', font: '600 12px/1 ' + UI, letterSpacing: '-.01em', textDecoration: 'none', whiteSpace: 'nowrap', transition: 'background .15s' }, { class: 'fb-dl', title: 'Скачать PDF', 'aria-label': 'Скачать PDF', href: url, download: '', target: '_blank', rel: 'noopener', text: '↓' });
+    
+    var bar = h('div', { position: 'relative', zIndex: 4, display: 'flex', alignItems: 'center', gap: '8px', padding: '8px', borderBottom: '1px solid #efedf3', background: '#fff', flexWrap: 'nowrap', gap: '6px' }, null, [chBtn, zoomG, viewB, fsB, dl]);
 
     /* chapters dropdown */
-    var menu = h('div', { position: 'absolute', left: '12px', top: '58px', width: 'min(440px, calc(100% - 24px))', maxHeight: '62vh', overflowY: 'auto', overflowX: 'hidden', background: '#fff', border: '1px solid ' + RULE, boxShadow: '0 30px 60px -30px rgba(20,19,23,.45)', zIndex: 10, display: 'none' }, { class: 'fb-s' });
+    var menu = h('div', { position: 'absolute', left: '12px', top: '50px', width: 'min(400px, calc(100% - 28px))', maxHeight: '62vh', overflowY: 'auto', overflowX: 'hidden', background: '#fff', border: 0, borderRadius: '18px', boxShadow: '0 30px 60px -30px rgba(20,19,23,.45)', zIndex: 10, display: 'none' }, { class: 'fb-s' });
 
     /* viewport */
     var vp = h('div', { position: 'relative', height: baseH, overflow: 'auto', background: DESK, display: 'flex', outline: 'none' }, { class: 'fb-s', tabindex: '0' });
@@ -78,7 +78,7 @@
     vp.appendChild(loader);
 
     function slot() {
-      var s = h('div', { position: 'absolute', top: 0, background: '#fff', overflow: 'hidden' });
+      var s = h('div', { position: 'absolute', top: 0, background: '#fff', overflow: 'hidden', borderRadius: '4px', transition: 'left .45s cubic-bezier(.4,.1,.25,1)' });
       s.cv = h('canvas', { position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' });
       s.ly = h('div', { position: 'absolute', inset: 0 });
       s.appendChild(s.cv); s.appendChild(s.ly); s.n = 0;
@@ -89,8 +89,8 @@
     stage.appendChild(L); stage.appendChild(R); stage.appendChild(spine);
 
     /* bottom scrubber */
-    var range = h('input', { flex: '1 1 auto' }, { type: 'range', min: '1', max: '1', value: '1', class: 'fb-r', 'aria-label': 'Страница' });
-    var foot = h('div', { display: 'flex', alignItems: 'center', gap: '14px', padding: '8px 14px', borderTop: '1px solid ' + RULE, background: PAPER, font: '500 10px/1 ' + MONO, letterSpacing: '.07em', textTransform: 'uppercase', color: MUTED }, null, [h('span', null, { text: 'Стр.' }), range, h('span', { whiteSpace: 'nowrap' }, { text: '← → листать' })]);
+    var range = h('input', { flex: '1 1 auto', minWidth: 0, accentColor: INK }, { type: 'range', min: '1', max: '1', value: '1', class: 'fb-r', 'aria-label': 'Страница' });
+    var foot = h('div', { display: 'flex', alignItems: 'center', gap: '10px', padding: '8px', borderTop: '1px solid #efedf3', background: '#fff' }, { title: 'Листать: ← → на клавиатуре или клик по странице' }, [prevB, range, counter, nextB]);
 
     root.appendChild(bar); root.appendChild(menu); root.appendChild(vp); root.appendChild(foot);
 
@@ -108,17 +108,17 @@
       if (!S.doc) return;
       var W = vp.clientWidth, H = vp.clientHeight;
       if (!W) return;
-      S.mobile = W < 640;
-      zoomG.style.display = S.mobile ? 'none' : 'flex';
+      S.mobile = window.innerWidth < 640;
+      zoomG.style.display = S.mobile || W < 420 ? 'none' : 'flex';
       chNow.style.display = W < 520 ? 'none' : 'flex';
-      foot.lastChild.style.display = S.mobile ? 'none' : '';
-      var canSpread = W >= 960;
-      viewB.style.display = canSpread ? 'inline-flex' : 'none';
+      
+      var canSpread = W >= 340;
+      viewB.style.display = canSpread && (S.full || W >= 520) ? 'inline-flex' : 'none';
       viewB.textContent = S.view === 'spread' ? 'Страница' : 'Разворот';
-      S.cols = canSpread && S.view === 'spread' && S.zoom === 1 ? 2 : 1;
-      var pad = S.mobile ? 8 : 22;
+      S.cols = canSpread && S.view === 'spread' && S.zoom <= 1 ? 2 : 1;
+      var pad = S.mobile ? 8 : S.full ? 24 : 14;
       var fitW = (W - pad * 2) / S.cols, fitH = (H - pad * 2) * S.ratio;
-      var base = S.cols === 2 ? Math.min(fitW, fitH) : Math.min(fitW, S.full ? 1100 : 940);
+      var base = S.mobile && !S.full ? fitW : Math.min(fitW, fitH);
       S.pageW = Math.floor(base * S.zoom);
       S.pageH = Math.floor(S.pageW / S.ratio);
       if (S.mobile && !S.full && S.zoom === 1) vp.style.height = (S.pageH + pad * 2) + 'px';
@@ -127,7 +127,7 @@
       Object.assign(R.style, { left: (S.cols === 2 ? S.pageW : 0) + 'px', width: S.pageW + 'px', height: S.pageH + 'px' });
       spine.style.display = S.cols === 2 ? 'block' : 'none';
       zLbl.textContent = Math.round(S.zoom * 100) + '%';
-      zOut.disabled = S.zoom <= 1; zIn.disabled = S.zoom >= 3;
+      zOut.disabled = S.zoom <= 0.5; zIn.disabled = S.zoom >= 3;
       if (renderedW !== S.pageW) { cache.clear(); renderedW = S.pageW; }
       if (S.cols === 2 && S.cur > 1) S.cur = S.cur - (S.cur % 2) || 1;
       show(S.cur);
@@ -182,7 +182,7 @@
         (links.get(n) || []).forEach(function (k) {
           var a = h('a', { position: 'absolute', left: k.l * 100 + '%', top: k.t * 100 + '%', width: k.w * 100 + '%', height: k.h * 100 + '%', cursor: 'pointer', borderRadius: '2px', transition: 'background .15s' });
           a.setAttribute('data-fl', '1');
-          a.onmouseenter = function () { a.style.background = 'rgba(124,77,255,.12)'; };
+          a.onmouseenter = function () { a.style.background = 'rgba(20,19,23,.08)'; };
           a.onmouseleave = function () { a.style.background = 'transparent'; };
           if (k.url) { a.href = k.url; a.target = '_blank'; a.rel = 'noopener'; }
           else a.onclick = function (e) { e.preventDefault(); e.stopPropagation(); turn(k.page); };
@@ -209,9 +209,15 @@
       });
     }
 
+    function center(pr) {
+      var solo = S.cols === 2 && !pr[0];
+      R.style.left = (S.cols === 2 ? (solo ? S.pageW / 2 : S.pageW) : 0) + 'px';
+      spine.style.display = S.cols === 2 && !solo ? 'block' : 'none';
+    }
     function show(p) {
       S.cur = p;
       var pr = pagesFor(p);
+      center(pr);
       ui();
       var job = Promise.all([paint(L, pr[0]), paint(R, pr[1])]);
       job.then(function () {
@@ -241,12 +247,13 @@
       if (a[0] === b[0] && a[1] === b[1]) return;
       if (S.busy) { S.queued = target; return; }
       var fwd = target > S.cur;
-      var anim = animate !== false && S.zoom === 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var anim = animate !== false && S.zoom <= 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!anim) { vp.scrollTop = 0; show(target); return; }
       S.busy = true;
       var finish = function () { S.busy = false; if (S.queued) { var q = S.queued; S.queued = 0; turn(q); } };
       Promise.all(b.filter(Boolean).map(raster)).then(function () {
         if (S.cols === 2) {
+          center([1, 1]);
           var lf;
           if (fwd) { lf = leaf(a[1], b[0]); Object.assign(lf.style, { left: S.pageW + 'px', transformOrigin: '0 50%' }); }
           else { lf = leaf(a[0], b[1]); Object.assign(lf.style, { left: 0, transformOrigin: '100% 50%' }); }
@@ -278,9 +285,9 @@
       menu.appendChild(h('div', { position: 'sticky', top: 0, padding: '12px 16px', background: '#fff', borderBottom: '1px solid ' + RULE, font: '500 10px/1 ' + MONO, letterSpacing: '.08em', textTransform: 'uppercase', color: MUTED, display: 'flex', justifyContent: 'space-between' }, null, [h('span', null, { text: 'Содержание' }), h('span', null, { text: String(S.chapters.length) })]));
       var head = menu.firstChild; menu.removeChild(head);
       S.chapters.forEach(function (c) {
-        var it = h('button', { display: 'grid', gridTemplateColumns: '64px minmax(0,1fr) auto', gap: '10px', alignItems: 'baseline', width: '100%', textAlign: 'left', padding: '11px 16px', border: 0, borderBottom: '1px solid #efedf3', background: '#fff', cursor: 'pointer', color: INK, font: 'inherit' }, { class: 'fb-c', type: 'button' }, [
+        var it = h('button', { display: 'grid', gridTemplateColumns: '52px minmax(0,1fr) auto', gap: '10px', alignItems: 'baseline', width: '100%', textAlign: 'left', padding: '9px 14px', border: 0, borderBottom: '1px solid #efedf3', background: '#fff', cursor: 'pointer', color: INK, font: 'inherit' }, { class: 'fb-c', type: 'button' }, [
           h('span', { font: '500 10.5px/1.3 ' + MONO, color: MUTED, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, { text: c.n }),
-          h('span', { fontSize: '14px', lineHeight: 1.35 }, { text: c.t }),
+          h('span', { fontSize: '13px', lineHeight: 1.35 }, { text: c.t }),
           h('span', { font: '400 10px/1.3 ' + MONO, color: MUTED }, { text: String(c.p) })
         ]);
         it.onclick = function () { menu.style.display = 'none'; turn(c.p); };
@@ -290,7 +297,7 @@
       // header is first child — shift indexes in ui()
       var kids = [].slice.call(menu.children, 1);
       Object.defineProperty(menu, 'items', { value: kids, configurable: true });
-      chBtn.style.display = S.chapters.length ? 'inline-flex' : 'none';
+      chBtn.disabled = !S.chapters.length;
       ui();
     }
     // ui() iterates menu.children; patch to skip header
@@ -350,37 +357,37 @@
     var onDoc = function (e) { if (!menu.contains(e.target) && e.target !== chBtn) menu.style.display = 'none'; };
     document.addEventListener('click', onDoc);
     prevB.onclick = prev; nextB.onclick = next;
-    zIn.onclick = function () { S.zoom = Math.min(3, +(S.zoom + 0.5).toFixed(2)); layout(); };
-    zOut.onclick = function () { S.zoom = Math.max(1, +(S.zoom - 0.5).toFixed(2)); layout(); };
+    zIn.onclick = function () { S.zoom = Math.min(3, +(S.zoom + 0.25).toFixed(2)); layout(); };
+    zOut.onclick = function () { S.zoom = Math.max(0.5, +(S.zoom - 0.25).toFixed(2)); layout(); };
     range.oninput = function () { counter.textContent = range.value + ' / ' + S.total; };
     range.onchange = function () { turn(+range.value, false); };
     fsB.onclick = function () { setFull(!S.full); };
     viewB.onclick = function () { S.view = S.view === 'spread' ? 'page' : 'spread'; S.zoom = 1; layout(); };
     function setFull(on) {
       S.full = on;
-      Object.assign(root.style, on ? { position: 'fixed', inset: '0', zIndex: '99999', border: '0' } : { position: 'relative', inset: 'auto', zIndex: 'auto', border: '1px solid ' + RULE });
+      Object.assign(root.style, on ? { position: 'fixed', inset: '0', zIndex: '99999', borderRadius: '0' } : { position: 'relative', inset: 'auto', zIndex: 'auto', borderRadius: '24px' });
       vp.style.height = on ? 'auto' : baseH; vp.style.flex = on ? '1 1 auto' : 'none';
       document.documentElement.style.overflow = on ? 'hidden' : '';
       fsB.textContent = on ? '✕' : '⤢';
       setTimeout(layout, 30);
     }
     stage.addEventListener('click', function (e) {
-      if (S.zoom !== 1 || e.target.closest('[data-fl]')) return;
+      if (S.zoom > 1 || e.target.closest('[data-fl]')) return;
       var r = stage.getBoundingClientRect();
       (e.clientX - r.left > r.width / 2 ? next : prev)();
     });
     stage.addEventListener('mousemove', function (e) {
-      if (S.zoom !== 1) { stage.style.cursor = 'grab'; return; }
+      if (S.zoom > 1) { stage.style.cursor = 'grab'; return; }
       var r = stage.getBoundingClientRect();
       stage.style.cursor = e.clientX - r.left > r.width / 2 ? 'e-resize' : 'w-resize';
     });
     var drag = null;
-    vp.addEventListener('mousedown', function (e) { if (S.zoom === 1) return; drag = { x: e.clientX, y: e.clientY, l: vp.scrollLeft, t: vp.scrollTop }; stage.style.cursor = 'grabbing'; e.preventDefault(); });
+    vp.addEventListener('mousedown', function (e) { if (S.zoom <= 1) return; drag = { x: e.clientX, y: e.clientY, l: vp.scrollLeft, t: vp.scrollTop }; stage.style.cursor = 'grabbing'; e.preventDefault(); });
     var onMove = function (e) { if (!drag) return; vp.scrollLeft = drag.l - (e.clientX - drag.x); vp.scrollTop = drag.t - (e.clientY - drag.y); };
     var onUp = function () { drag = null; };
     window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp);
     var tx = null;
-    vp.addEventListener('touchstart', function (e) { tx = S.zoom === 1 ? e.touches[0].clientX : null; }, { passive: true });
+    vp.addEventListener('touchstart', function (e) { tx = S.zoom <= 1 ? e.touches[0].clientX : null; }, { passive: true });
     vp.addEventListener('touchend', function (e) { if (tx == null) return; var dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 45) (dx < 0 ? next : prev)(); tx = null; });
     var onKey = function (e) {
       if (!root.isConnected || /INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) return;

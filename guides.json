@@ -109,7 +109,8 @@
         "финансовые аналитики"
       ],
       "pdf": "pdf/product-metrics.pdf",
-      "test": "tests/product-metrics.json"
+      "test": "tests/product-metrics.json",
+      "color": "#1fd65f"
     },
     {
       "id": "methodist",

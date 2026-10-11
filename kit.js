@@ -1,4 +1,4 @@
-/* baedeker. — виджеты для Тильды.
+/* sherpa. — виджеты для Тильды.
    Каталог:      <div data-catalog="https://USER.github.io/guides/guides.json" data-guide-page="/guide"></div>
    Страница гайда: <div data-guide="https://USER.github.io/guides/guides.json" data-catalog-page="/#catalog"></div>
    Подключение:  <script src="https://USER.github.io/guides/kit.js"></script>
@@ -7,13 +7,17 @@
   if (window.PVKit) return;
   var me = document.currentScript && document.currentScript.src;
   var BASE = me ? me.replace(/[^/]*$/, '') : '';
-  var INK = '#141317', RULE = '#dddae3', MUTED = '#7d7986', SOFT = '#4a4752', ACC = 'oklch(0.6 0.22 293)', ACC_D = 'oklch(0.5 0.22 293)';
+  var INK = '#141317', RULE = '#dddae3', MUTED = '#7d7986', SOFT = '#4a4752', ACC = '#141317', ACC_D = '#141317';
+  var CAT_COLORS = { 'Маркетинг': '#ff2a1f', 'Продукт': '#7c4dff', 'Финансы': '#1fd65f', 'Образование': '#2f5bff', 'Дизайн': '#ff3fa4', 'Аналитика': '#00b8d9', 'Разработка': '#ff8a00' };
+  var PALETTE = ['#ff2a1f', '#7c4dff', '#1fd65f', '#2f5bff', '#ff3fa4', '#00b8d9', '#ff8a00'];
+  function accentOf(g) { if (g.color) return g.color; if (CAT_COLORS[g.cat]) return CAT_COLORS[g.cat]; var h = 0, s = String(g.cat || g.id || ''); for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return PALETTE[h % PALETTE.length]; }
+  window.PVAccent = accentOf;
   var MONO = "'JetBrains Mono',ui-monospace,monospace", UI = "'Onest','Helvetica Neue',Helvetica,Arial,sans-serif";
 
   if (!document.querySelector('link[data-pv-fonts]')) {
     var lf = document.createElement('link');
     lf.rel = 'stylesheet'; lf.setAttribute('data-pv-fonts', '');
-    lf.href = 'https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap';
+    lf.href = 'https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Manrope:wght@300;800&family=JetBrains+Mono:wght@400;500&display=swap';
     document.head.appendChild(lf);
   }
   var css = document.createElement('style');
@@ -22,24 +26,24 @@
     '.pv a{color:' + INK + ';text-decoration:none}',
     '.pv-mono{font-family:' + MONO + ';letter-spacing:.07em;text-transform:uppercase}',
     '.pv-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px}',
-    '.pv-chip{font:500 10.5px/1 ' + MONO + ';letter-spacing:.06em;text-transform:uppercase;padding:10px 14px;border:1px solid ' + RULE + ';border-radius:999px;background:transparent;color:' + MUTED + ';cursor:pointer;white-space:nowrap;transition:all .2s}',
-    '.pv-chip:hover{border-color:' + INK + ';color:' + INK + '}.pv-chip[aria-pressed=true]{background:' + ACC + ';border-color:' + ACC + ';color:#fff}',
+    '.pv-chip{font:600 14.5px/1 ' + UI + ';letter-spacing:-.01em;padding:12px 18px;border:0;border-radius:999px;background:#e9e7ee;color:' + INK + ';cursor:pointer;white-space:nowrap;transition:all .2s}',
+    '.pv-chip{display:inline-flex;align-items:center;gap:8px}.pv-n{font-family:' + MONO + ';font-size:11px;font-weight:500;letter-spacing:0;opacity:.5}.pv-chip:hover{background:#dddae3}.pv-chip[aria-pressed=true]{background:' + INK + ';color:#fff}',
     '.pv-pager{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:28px;flex-wrap:wrap}',
-    '.pv-pg{min-width:40px;height:40px;padding:0 10px;border:1px solid ' + RULE + ';background:#fff;color:' + INK + ';font:500 12px/1 ' + MONO + ';cursor:pointer;transition:all .15s}',
-    '.pv-pg:hover:not(:disabled){border-color:' + INK + '}.pv-pg[aria-current=page]{background:' + INK + ';border-color:' + INK + ';color:#fff}.pv-pg:disabled{opacity:.35;cursor:default}',
+    '.pv-pg{min-width:40px;height:40px;padding:0 12px;border:0;border-radius:999px;background:#e9e7ee;color:' + INK + ';font:600 14px/1 ' + UI + ';cursor:pointer;transition:all .15s}',
+    '.pv-pg:hover:not(:disabled){background:#dddae3}.pv-pg[aria-current=page]{background:' + INK + ';border-color:' + INK + ';color:#fff}.pv-pg:disabled{opacity:.35;cursor:default}',
     '.pv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:clamp(14px,1.4vw,20px)}','.pv-card>.pv-cv{height:100%}.pv-card>.pv-cv>div{height:100%}',
     '.pv-grid.sm{grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr))}',
-    '.pv-card{display:grid;grid-row:span 2;grid-template-rows:subgrid;row-gap:0;background:#fff;border:1px solid ' + RULE + ';transition:transform .3s,box-shadow .3s,border-color .3s}',
-    '.pv-card:hover{transform:translateY(-4px);box-shadow:0 26px 44px -30px rgba(20,19,23,.45);border-color:#c9c5d1}',
-    '.pv-card-b{display:flex;flex-direction:column;gap:10px;padding:12px 14px 14px;border-top:1px solid #e9e7ee}',
-    '.pv-btn{display:inline-flex;align-items:center;gap:10px;padding:15px 21px;font:500 11.5px/1 ' + MONO + ';letter-spacing:.08em;text-transform:uppercase;border:1px solid ' + INK + ';cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}',
-    '.pv-btn.dark{background:' + INK + ';color:#fff!important}.pv-btn.dark:hover{background:' + ACC_D + ';border-color:' + ACC_D + '}',
-    '.pv-btn.line{background:transparent}.pv-btn.line:hover{background:' + INK + ';color:#fff!important}',
+    '.pv-card{display:grid;grid-row:span 2;grid-template-rows:subgrid;row-gap:0;background:#fff;border:0;border-radius:20px;overflow:hidden;transition:transform .3s,box-shadow .3s}',
+    '.pv-card:hover{transform:translateY(-4px);box-shadow:0 26px 44px -30px rgba(20,19,23,.45)}',
+    '.pv-card-b{display:flex;flex-direction:column;gap:10px;padding:14px 16px 16px;border-top:1px solid #efedf3}',
+    '.pv-btn{display:inline-flex;align-items:center;gap:10px;padding:15px 22px;font:600 14.5px/1 ' + UI + ';letter-spacing:-.01em;border:0;border-radius:999px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}',
+    '.pv-btn.dark{background:' + INK + ';color:#fff!important}.pv-btn.dark:hover{background:#2e2c34;border-color:#2e2c34}',
+    '.pv-btn.line{background:#e9e7ee;color:' + INK + '!important}.pv-btn.line:hover{background:#dddae3}',
     '.pv-hero{display:grid;grid-template-columns:minmax(180px,250px) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:start}',
-    '.pv-spec{display:grid;grid-template-columns:minmax(90px,140px) minmax(0,1fr);gap:14px;padding:10px 0;border-bottom:1px solid ' + RULE + ';align-items:baseline}',
-    '.pv-ws{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,410px);gap:clamp(14px,1.6vw,22px);align-items:start}',
+    '.pv-spec{display:grid;grid-template-columns:minmax(90px,140px) minmax(0,1fr);gap:14px;padding:12px 0;border-bottom:1px solid #efedf3;align-items:baseline}.pv-spec:last-child{border-bottom:0}',
+    '.pv-ws{display:grid;grid-template-columns:calc(400px + clamp(24px,3vw,48px)) minmax(0,1fr);gap:0;align-items:stretch}.pv-ws>div:first-child{padding-right:clamp(24px,3vw,48px)}.pv-ws>.pv-side{padding-left:clamp(24px,3vw,48px);border-left:1px solid ' + RULE + '}',
     '.pv-side{position:sticky;top:76px;display:flex;flex-direction:column}',
-    '@media (max-width:1100px){.pv-ws{grid-template-columns:minmax(0,1fr)}.pv-side{position:static}}',
+    '@media (max-width:980px){.pv-ws{grid-template-columns:minmax(0,1fr)}.pv-ws>div:first-child{padding:0 0 28px}.pv-ws>.pv-side{position:static;padding:28px 0 0;border-left:0;border-top:1px solid ' + RULE + '}}',
     '@media (max-width:680px){.pv-hero{grid-template-columns:minmax(0,1fr)}.pv-hero-cover{max-width:240px}}'
   ].join('');
   document.head.appendChild(css);
@@ -73,22 +77,23 @@
     var m = function (sz, c, extra) { return 'font-family:' + MONO + ';font-size:' + sz + 'cqw;letter-spacing:.08em;text-transform:uppercase;color:' + c + ';' + (extra || ''); };
     var pill = 'padding:1.1cqw 2cqw;border-radius:99cqw;background:#f3f2f6;color:' + INK + ';white-space:nowrap';
     return '<div class="pv-cv" style="container-type:inline-size;width:100%"><div style="position:relative;width:100%;aspect-ratio:' + (compact ? 'auto' : '3/4') + ';background:#fff;display:flex;flex-direction:column;padding:' + (compact ? '16cqw 8cqw 6.5cqw' : '8cqw 8cqw 6.5cqw') + ';font-family:' + UI + ';color:' + INK + '">' +
-      '<div style="position:absolute;inset:0;overflow:hidden;pointer-events:none"><div style="position:absolute;right:-22cqw;top:-22cqw;width:74cqw;height:74cqw;border-radius:50%;border:.3cqw solid #ece8f7"></div><div style="position:absolute;right:-8cqw;top:-8cqw;width:46cqw;height:46cqw;border-radius:50%;background:#f4f1fc"></div></div>' +
+      '<div style="position:absolute;inset:0;overflow:hidden;pointer-events:none"><div style="position:absolute;right:-20cqw;top:-20cqw;width:56cqw;height:56cqw;border-radius:50%;border:.3cqw solid #e8e7ec"></div><div style="position:absolute;right:-8cqw;top:-8cqw;width:34cqw;height:34cqw;border-radius:50%;background:#f1f0f3"></div></div>' +
+      '<div style="position:relative;text-align:center;font-family:Manrope,' + UI + ';font-size:' + (compact ? 7 : 6) + 'cqw;letter-spacing:-.05em;line-height:1;color:' + INK + ';margin:' + (compact ? '-8cqw 0 8cqw' : '0 0 8cqw') + '"><span style="font-weight:300">sher</span><span style="font-weight:800">pa.</span></div>' +
       '<div style="position:relative;margin-top:auto;display:flex;flex-direction:column;gap:3.4cqw">' +
         '<span style="align-self:flex-start;padding:1.3cqw 2.4cqw;border-radius:99cqw;background:' + INK + ';' + m(2.3, '#fff') + '">' + esc(g.cat) + '</span>' +
-        '<div style="font-weight:800;font-size:11.4cqw;line-height:.94;letter-spacing:-.045em"><span style="display:block">' + esc(g.big1) + '</span><span style="display:block;color:' + ACC_D + '">' + esc(g.big2) + '</span></div>' +
+        '<div style="font-weight:800;font-size:11.4cqw;line-height:.94;letter-spacing:-.045em"><span style="display:block">' + esc(g.big1) + '</span><span style="display:block;color:' + accentOf(g) + '">' + esc(g.big2) + '</span></div>' +
         '<div style="font-size:4.1cqw;line-height:1.22;font-weight:500;letter-spacing:-.02em;color:' + SOFT + ';max-width:76cqw;text-wrap:balance">' + esc(g.sub) + '</div>' +
       '</div>' +
       '<div style="position:relative;margin-top:7cqw;padding-top:4.2cqw;border-top:.25cqw solid #e6e3ec;display:grid;grid-template-columns:1.25fr 1fr;gap:4cqw">' +
-        '<div style="display:flex;flex-direction:column;gap:1.4cqw"><span style="' + m(2.1, '#8b8794') + '">Для кого</span><span style="font-size:3.3cqw;line-height:1.25;font-weight:600">' + esc(g.forShort) + '</span></div>' +
-        '<div style="display:flex;flex-direction:column;gap:1.4cqw"><span style="' + m(2.1, '#8b8794') + '">Уровень</span><span style="font-size:3.3cqw;line-height:1.25;font-weight:600">' + esc(g.level) + '</span></div>' +
+        '<div style="display:flex;flex-direction:column;gap:1.6cqw"><span style="' + m(compact ? 2.8 : 2.1, '#8b8794') + '">Для кого</span><span style="font-size:' + (compact ? 4.6 : 3.3) + 'cqw;line-height:1.25;font-weight:600">' + esc(g.forShort) + '</span></div>' +
+        '<div style="display:flex;flex-direction:column;gap:1.6cqw"><span style="' + m(compact ? 2.8 : 2.1, '#8b8794') + '">Уровень</span><span style="font-size:' + (compact ? 4.6 : 3.3) + 'cqw;line-height:1.25;font-weight:600">' + esc(g.level) + '</span></div>' +
       '</div>' +
-      '<div style="position:relative;margin-top:4.6cqw;display:flex;justify-content:space-between;align-items:center;gap:3cqw;' + m(2.2, '#8b8794') + '"><span style="display:flex;gap:1.4cqw;flex-wrap:wrap"><span style="' + pill + '">' + g.pages + ' стр.</span><span style="' + pill + '">' + esc(g.chapters) + '</span></span>' + (g.author ? '<span style="color:' + INK + ';font-weight:500;text-transform:none;letter-spacing:0;font-size:2.6cqw">' + esc(g.author) + '</span>' : '') + '</div>' +
+      (compact ? '' : '<div style="position:relative;margin-top:4.6cqw;display:flex;justify-content:space-between;align-items:center;gap:3cqw;' + m(2.2, '#8b8794') + '"><span style="display:flex;gap:1.4cqw;flex-wrap:wrap"><span style="' + pill + '">' + g.pages + ' стр.</span><span style="' + pill + '">' + esc(g.chapters) + '</span></span>' + (g.author ? '<span style="color:' + INK + ';font-weight:500;text-transform:none;letter-spacing:0;font-size:2.6cqw">' + esc(g.author) + '</span>' : '') + '</div>') +
     '</div></div>';
   }
   function card(g, total, page) {
     return '<a class="pv-card" href="' + esc(guideHref(page, g)) + '">' + cover(g, total, true) +
-      '<div class="pv-card-b"><span style="font-size:14.5px;line-height:1.25;font-weight:600;letter-spacing:-.015em;text-wrap:balance">' + esc(g.title) + '</span><span class="pv-mono" style="margin-top:auto;font-size:10px;color:' + ACC_D + '">Открыть →</span></div></a>';
+      '<div class="pv-card-b"><span style="font-size:14.5px;line-height:1.25;font-weight:600;letter-spacing:-.015em;text-wrap:balance">' + esc(g.title) + '</span><span style="margin-top:auto;font-size:13.5px;font-weight:600;letter-spacing:-.01em;color:' + ACC + '">Открыть →</span></div></a>';
   }
 
   function mountCatalog(el) {
@@ -113,7 +118,7 @@
       }
       function render() {
         var chips = '<div class="pv-chips">' + [['all', 'Все', list.length]].concat(cats.map(function (c) { return [c, c, list.filter(function (g) { return g.cat === c; }).length]; })).map(function (c) {
-          return '<button type="button" class="pv-chip" data-c="' + esc(c[0]) + '" aria-pressed="' + (cur === c[0]) + '">' + esc(c[1]) + ' ' + c[2] + '</button>';
+          return '<button type="button" class="pv-chip" data-c="' + esc(c[0]) + '" aria-pressed="' + (cur === c[0]) + '">' + esc(c[1]) + '<span class="pv-n">' + c[2] + '</span></button>';
         }).join('') + '</div>';
         var all = cur === 'all' ? list : list.filter(function (g) { return g.cat === cur; });
         var pages = Math.ceil(all.length / per); if (pg > pages) pg = pages || 1;
@@ -139,28 +144,28 @@
       var g = list.filter(function (x) { return x.id === id; })[0];
       if (!g) { el.innerHTML = '<div style="padding:40px 0;display:flex;flex-direction:column;gap:14px;align-items:flex-start"><span style="font-size:20px;font-weight:600">Гайд не найден</span><a class="pv-btn dark" href="' + esc(back) + '">В каталог</a></div>'; return; }
       document.title = g.title + ' — гайд';
-      var specs = [['Для кого', g.forWho], ['Уровень', g.level], ['Объём', g.pages + ' стр. · ' + g.chapters], ['Собрали', g.teamText], ['Сквозной кейс', g.caseName]].filter(function (s) { return s[1]; });
+      var specs = [['Для кого', g.forWho], ['Уровень', g.level], ['Объём', g.pages + ' стр. · ' + g.chapters], ['Собрали', g.teamText]].filter(function (s) { return s[1]; });
       var others = list.filter(function (x) { return x.id !== g.id; });
       el.innerHTML =
         '<section class="pv-hero" style="padding-bottom:clamp(24px,3vw,40px);border-bottom:1px solid ' + RULE + '">' +
-          '<div class="pv-hero-cover" style="border:1px solid ' + RULE + ';box-shadow:0 30px 60px -40px rgba(20,19,23,.45)">' + cover(g, list.total) + '</div>' +
+          '<div class="pv-hero-cover" style="border-radius:20px;overflow:hidden;box-shadow:0 30px 60px -40px rgba(20,19,23,.45)">' + cover(g, list.total) + '</div>' +
           '<div style="display:flex;flex-direction:column;gap:18px;min-width:0">' +
-            '<a class="pv-mono" href="' + esc(back) + '" style="font-size:11px;color:' + MUTED + '">← Каталог · ' + esc(g.cat) + '</a>' +
-            '<h1 style="margin:0;font-family:' + MONO + ';font-weight:400;font-size:clamp(26px,3vw,42px);line-height:1.06;letter-spacing:-.045em;text-wrap:balance">' + esc(g.title) + '</h1>' +
+            '<a href="' + esc(back) + '" style="font-size:14px;font-weight:600;color:' + MUTED + '">← Каталог · ' + esc(g.cat) + '</a>' +
+            '<h1 style="margin:0;font-family:' + UI + ';font-weight:700;font-size:clamp(32px,4vw,56px);line-height:1;letter-spacing:-.05em;text-wrap:balance">' + esc(g.title) + '</h1>' +
             (g.lead ? '<p style="margin:0;max-width:62ch;font-size:15.5px;line-height:1.55;text-wrap:pretty">' + esc(g.lead) + '</p>' : '') +
-            '<div style="border-top:1px solid ' + INK + '">' + specs.map(function (s) { return '<div class="pv-spec"><span class="pv-mono" style="font-size:10px;color:' + MUTED + '">' + s[0] + '</span><span style="font-size:14.5px;line-height:1.45">' + esc(s[1]) + '</span></div>'; }).join('') + '</div>' +
-            '<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="pv-btn dark" href="#pv-read" data-jump="pv-read">Читать онлайн →</a><a class="pv-btn line" href="' + esc(g.pdfUrl) + '" download target="_blank" rel="noopener">Скачать PDF</a>' + (g.testUrl ? '<a class="pv-btn line" href="#pv-test" data-jump="pv-test" style="border-color:' + RULE + ';color:' + SOFT + '">Тест</a>' : '') + '</div>' +
+            '<div style="background:#fff;border-radius:20px;padding:6px 20px">' + specs.map(function (s) { return '<div class="pv-spec"><span class="pv-mono" style="font-size:10px;color:' + MUTED + '">' + s[0] + '</span><span style="font-size:14.5px;line-height:1.45">' + esc(s[1]) + '</span></div>'; }).join('') + '</div>' +
+            '<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="pv-btn dark" href="' + esc(g.pdfUrl) + '" download target="_blank" rel="noopener">Скачать PDF</a></div>' +
           '</div>' +
         '</section>' +
         '<section id="pv-read" class="pv-ws" style="padding:clamp(20px,2.6vw,32px) 0">' +
-          '<div style="min-width:0"><div data-flipbook="' + esc(g.pdfUrl) + '" data-title="' + esc(g.title) + '" data-height="min(82vh,900px)"></div></div>' +
-          (g.testUrl ? '<aside id="pv-test" class="pv-side"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 2px 10px;min-height:46px"><span style="font-family:' + MONO + ';font-size:19px;letter-spacing:-.03em">Тест по гайду</span><span class="pv-mono" style="font-size:10px;color:' + MUTED + '">по желанию</span></div><div data-quiz="' + esc(g.testUrl) + '" style="min-height:440px"></div></aside>' : '') +
+          '<div style="min-width:0"><div style="display:flex;justify-content:space-between;gap:12px;padding:0 0 18px;align-items:baseline"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Читать онлайн</span></div><div data-flipbook="' + esc(g.pdfUrl) + '" data-title="' + esc(g.title) + '" data-height="240px" data-view="spread"></div></div>' +
+          (g.testUrl ? '<aside id="pv-test" class="pv-side"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 0 18px;align-items:baseline"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Тестирование</span></div><div data-quiz="' + esc(g.testUrl) + '"></div></aside>' : '') +
         '</section>' +
-        (others.length ? '<section style="padding:clamp(28px,3.4vw,48px) 0 0;border-top:1px solid ' + RULE + '"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:18px"><span style="font-family:' + MONO + ';font-size:20px;letter-spacing:-.03em">Другие гайды</span><a class="pv-mono" href="' + esc(back) + '" style="font-size:11px;border-bottom:1px solid ' + INK + ';padding-bottom:3px">Весь каталог</a></div><div class="pv-grid sm">' + others.map(function (x) { return card(x, list.total, page); }).join('') + '</div></section>' : '');
+        (others.length ? '<section style="padding:clamp(28px,3.4vw,48px) 0 0;border-top:1px solid ' + RULE + '"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:18px"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Другие гайды</span><a class="pv-btn line" href="' + esc(back) + '" style="padding:11px 18px;font-size:13.5px">Весь каталог →</a></div><div class="pv-grid sm">' + others.map(function (x) { return card(x, list.total, page); }).join('') + '</div></section>' : '');
       [].forEach.call(el.querySelectorAll('[data-jump]'), function (a) {
         a.onclick = function (e) { var t = document.getElementById(a.getAttribute('data-jump')); if (!t) return; e.preventDefault(); window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' }); };
       });
-      load(BASE + 'flipbook.js'); if (g.testUrl) load(BASE + 'quiz.js');
+      load(BASE + 'flipbook.js?v=17'); if (g.testUrl) load(BASE + 'quiz.js?v=13');
     }).catch(function (e) { console.warn('[pv]', e); el.innerHTML = '<div class="pv-mono" style="font-size:11px;color:' + MUTED + '">Не удалось загрузить гайд</div>'; });
   }
 
