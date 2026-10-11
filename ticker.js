@@ -3,9 +3,14 @@
    Свои данные: data-nums="12 480|96%|…" data-words="SQL|Когорты|…"
    Подписи: data-label-left="…" data-label-right="…" (пустая строка — без подписи) */
 (function () {
-  var NUMS = ['Ищем CRM-маркетолога, опыт от 1 года', 'Требования: SQL, A/B-тесты', 'Growth Manager · EdTech', 'от 150 000 ₽ · гибрид', 'Знание юнит-экономики обязательно', 'Методист онлайн-курсов', 'Product Manager / middle', 'Опыт с Яндекс Директ и VK Рекламой', 'Будет плюсом: Amplitude, Metabase', 'Performance-маркетолог · Москва', 'Понимание P&L и когортного анализа', 'Проведение custdev-интервью'];
+  var NUMS = ['CRM-маркетолог · Москва', 'Growth Manager · EdTech', 'Product Manager / middle', 'Методист онлайн-курсов', 'Performance-маркетолог · удалёнка', 'Продуктовый аналитик · junior', 'Финансовый аналитик · гибрид', 'UX/UI-дизайнер · СПб', 'Project Manager · IT', 'Data Analyst · финтех', 'Instructional Designer', 'Маркетинг-аналитик · e-com', 'Product Designer / senior', 'Руководитель онлайн-школы', 'Бизнес-аналитик · банк'];
   var WORDS = ['CRM-маркетинг', 'Growth-маркетинг EdTech', 'Performance-маркетинг', 'Product-manager', 'Метрики и финансы', 'Методист'];
-  var SKILLS = ['SQL', 'LTV', 'CAC', 'RFM', 'A/B', 'ДРР', 'CPL', 'NSM', 'P&L', 'Когорты', 'Custdev', 'RICE', 'UTM', 'CDP', 'ROMI', 'Retention', 'Директ', 'Воронка', 'Юнит-эк.', 'Атрибуция'];
+  var SKILLS = ['SQL', 'LTV', 'CAC', 'RFM', 'A/B', 'ДРР', 'CPL', 'NSM', 'P&L', 'Когорты', 'Custdev', 'RICE', 'UTM', 'CDP', 'ROMI', 'Retention', 'Директ', 'Воронка', 'Юнит-эк.', 'Атрибуция',
+    'DAU', 'MAU', 'ARPU', 'ARPPU', 'Churn', 'Конверсия', 'CTR', 'CPA', 'ROI', 'MRR', 'AOV', 'Python', 'Power BI', 'Дашборды', 'p-value',
+    'JTBD', 'CJM', 'MVP', 'OKR', 'Roadmap', 'PMF', 'NPS', 'CSAT', 'Activation', 'Stickiness', 'Kano',
+    'COR', 'Completion', 'Bloom', 'ADDIE', 'LMS', 'Курс-карта', 'SCORM',
+    'EBITDA', 'ROE', 'NPV', 'IRR', 'Cash Flow', 'Маржа', 'Burn rate', 'Payback', 'Бюджет',
+    'Figma', 'UX', 'UI-кит', 'Гайдлайн', 'Прототип', 'SUS', 'Usability', 'Сетка', 'Wireframe'];
   var LETTERS = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЭЮЯ', DIGITS = '0123456789', NOISE = '#%&*+=/<>?§¤@';
   var MONO = "'JetBrains Mono',ui-monospace,monospace";
   var H = 132, B = 44, N = 14, SPEED = 44;

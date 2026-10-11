@@ -120,7 +120,9 @@
     el.classList.add('pv');
     var page = el.getAttribute('data-guide-page') || '/guide';
     el.innerHTML = '<div class="pv-mono" style="font-size:11px;color:' + MUTED + '">Загружаем каталог…</div>';
+    var excl = el.getAttribute('data-exclude') || '';
     catalog(src).then(function (list) {
+      if (excl) { var tot = list.total; list = list.filter(function (g) { return g.id !== excl; }); list.total = tot; }
       var cats = []; list.forEach(function (g) { if (cats.indexOf(g.cat) < 0) cats.push(g.cat); });
       var cur = 'all', pg = 1, per = Math.max(1, +(el.getAttribute('data-per-page') || 8));
       function pager(n) {
@@ -208,13 +210,14 @@
         '</section>' +
         '<section id="pv-read" class="pv-ws" style="padding:clamp(20px,2.6vw,32px) 0">' +
           '<div style="min-width:0"><div style="display:flex;justify-content:space-between;gap:12px;padding:0 0 18px;align-items:baseline"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Читать онлайн</span></div><div data-flipbook="' + esc(g.pdfUrl) + '" data-title="' + esc(g.title) + '" data-height="240px" data-view="spread"></div></div>' +
-          (g.testUrl ? '<aside id="pv-test" class="pv-side"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 0 18px;align-items:baseline"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Тестирование</span></div><div data-quiz="' + esc(g.testUrl) + '"></div></aside>' : '') +
+          (g.testUrl ? '<aside id="pv-test" class="pv-side"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 0 18px;align-items:baseline"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Тестирование</span></div><div data-quiz="' + esc(g.testUrl) + '" data-accent="' + esc(accentOf(g)) + '"></div></aside>' : '') +
         '</section>' +
-        (others.length ? '<section style="padding:clamp(28px,3.4vw,48px) 0 0;border-top:1px solid ' + RULE + '"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:18px"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Другие гайды</span><a class="pv-btn line" href="' + esc(back) + '" style="padding:11px 18px;font-size:13.5px">Весь каталог →</a></div><div class="pv-grid sm">' + others.map(function (x) { return card(x, list.total, page); }).join('') + '</div></section>' : '');
+        (others.length ? '<section style="padding:clamp(28px,3.4vw,48px) 0 0;border-top:1px solid ' + RULE + '"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:18px"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Другие гайды</span><a class="pv-btn line" href="' + esc(back) + '" style="padding:11px 18px;font-size:13.5px">Весь каталог</a></div><div class="pv-more" data-catalog="' + esc(src) + '" data-guide-page="' + esc(page) + '" data-exclude="' + esc(g.id) + '" data-per-page="' + esc(el.getAttribute('data-more-per-page') || '8') + '"></div></section>' : '');
+      var more = el.querySelector('.pv-more'); if (more) mountCatalog(more);
       [].forEach.call(el.querySelectorAll('[data-jump]'), function (a) {
         a.onclick = function (e) { var t = document.getElementById(a.getAttribute('data-jump')); if (!t) return; e.preventDefault(); window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' }); };
       });
-      load(BASE + 'flipbook.js?v=17'); if (g.testUrl) load(BASE + 'quiz.js?v=13');
+      load(BASE + 'flipbook.js?v=17'); if (g.testUrl) load(BASE + 'quiz.js?v=18');
     }).catch(function (e) { console.warn('[pv]', e); el.innerHTML = '<div class="pv-mono" style="font-size:11px;color:' + MUTED + '">Не удалось загрузить гайд</div>'; });
   }
 
