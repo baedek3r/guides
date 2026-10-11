@@ -52,12 +52,17 @@
     '.pv-empty{padding:40px 20px;border-radius:20px;background:#fff;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}',
     '.pv-sug{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}.pv-sug button{padding:8px 13px;border:0;border-radius:999px;background:#efedf3;font:600 13px/1 ' + UI + ';color:' + INK + ';cursor:pointer}.pv-sug button:hover{background:#dddae3}',
     '.pv-card-m{display:none}',
-    '@media (max-width:640px){.pv-bar{flex-direction:column;align-items:stretch;gap:12px}.pv-q{flex:none;min-width:0;order:-1}.pv-q input{height:46px;font-size:16px}',
-    '.pv-bar .pv-chips{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(-1 * clamp(16px,3vw,32px));padding:0 clamp(16px,3vw,32px);scrollbar-width:none}.pv-bar .pv-chips::-webkit-scrollbar{display:none}.pv-chip{padding:10px 14px;font-size:14px}',
-    '.pv-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.pv-card{border-radius:12px}.pv-card:hover{transform:none;box-shadow:none}',
+    '.pv-fbtn{display:none}.pv-sheet{position:fixed;inset:0;z-index:9999;display:flex;align-items:flex-end;background:rgba(20,19,23,0);transition:background .2s;font-family:' + UI + ';color:' + INK + '}.pv-sheet.on{background:rgba(20,19,23,.4)}',
+    '.pv-sheet-p{width:100%;background:#fff;border-radius:22px 22px 0 0;padding:8px 16px calc(16px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .25s cubic-bezier(.2,.8,.2,1);max-height:80vh;overflow:auto}.pv-sheet.on .pv-sheet-p{transform:none}',
+    '.pv-sheet-h{width:36px;height:4px;border-radius:4px;background:#dddae3;margin:0 auto 14px}.pv-opt{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:0 4px;border:0;border-bottom:1px solid #efedf3;background:none;font:600 16px/1.2 ' + UI + ';letter-spacing:-.015em;color:' + INK + ';text-align:left;cursor:pointer}.pv-opt:last-child{border-bottom:0}',
+    '.pv-opt i{width:20px;height:20px;border-radius:50%;border:1.6px solid #c9c5d1;flex:none;position:relative}.pv-opt[aria-checked=true] i{border-color:' + INK + '}.pv-opt[aria-checked=true] i:after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:' + INK + '}.pv-opt .pv-n{margin-left:auto}',
+    '@media (max-width:640px){.pv-bar{flex-wrap:nowrap;gap:8px;margin-bottom:16px}.pv-bar .pv-chips{display:none!important}.pv-q{flex:1 1 auto;min-width:0}.pv-q input{height:46px;font-size:16px}',
+    '.pv-fbtn{display:inline-flex;align-items:center;gap:8px;flex:none;height:46px;max-width:46%;padding:0 14px 0 16px;border:0;border-radius:999px;background:' + INK + ';color:#fff;font:600 14px/1 ' + UI + ';letter-spacing:-.01em;cursor:pointer}.pv-fbtn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.pv-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.pv-card{border-radius:16px;box-shadow:0 1px 0 #e9e7ee}.pv-card:hover{transform:none;box-shadow:0 1px 0 #e9e7ee}',
     '.pv-card .pv-cv>div{padding:10cqw 8cqw 8cqw!important;aspect-ratio:1/1!important}.pv-card .pv-cv-logo{font-size:9cqw!important;margin:0 0 6cqw!important;text-align:left!important}',
-    '.pv-card .pv-cv-cat{font-size:6cqw!important;padding:2.4cqw 4.6cqw!important}.pv-card .pv-cv-big{font-size:14cqw!important}.pv-card .pv-cv-sub,.pv-card .pv-cv-meta{display:none!important}',
-    '.pv-card-b{padding:8px 8px 10px;gap:4px}.pv-card-t{font-size:12px!important;line-height:1.2!important;letter-spacing:-.01em!important}.pv-card-m{display:block;font-size:10.5px;line-height:1.3;color:' + MUTED + '}.pv-card-go{display:none!important}}'
+    '.pv-card .pv-cv-cat{font-size:5.4cqw!important;padding:2.2cqw 4.2cqw!important}.pv-card .pv-cv-big{font-size:13cqw!important}.pv-card .pv-cv-sub,.pv-card .pv-cv-meta{display:none!important}',
+    '.pv-card-b{padding:12px 12px 12px;gap:6px}.pv-card-t{font-size:13.5px!important;line-height:1.25!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.pv-card-m{display:block;font-size:11.5px;line-height:1.3;color:' + MUTED + '}',
+    '.pv-card-go{margin-top:6px!important;display:flex!important;align-items:center;justify-content:center;height:36px;border-radius:999px;background:' + INK + ';color:#fff!important;font-size:13px!important}}'
   ].join('');
   document.head.appendChild(css);
 
@@ -136,16 +141,29 @@
         var ws = norm(q).split(/[\s,.;]+/).filter(Boolean);
         return ws.every(function (w) { var st = w.length > 5 ? w.slice(0, w.length - 2) : w; return g.hay.indexOf(st) > -1; });
       }
-      el.innerHTML = '<div class="pv-bar"><div class="pv-chips"></div><label class="pv-q"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="' + INK + '" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg><input type="search" enterkeyhint="search" autocomplete="off" placeholder="Поиск: маркетинг, EdTech, SQL…" aria-label="Поиск по гайдам"><button type="button" class="pv-qx" aria-label="Очистить">×</button></label></div><div class="pv-res"></div>';
+      el.innerHTML = '<div class="pv-bar"><div class="pv-chips"></div><label class="pv-q"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="' + INK + '" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg><input type="search" enterkeyhint="search" autocomplete="off" placeholder="Поиск: маркетинг, EdTech, SQL…" aria-label="Поиск по гайдам"><button type="button" class="pv-qx" aria-label="Очистить">×</button></label>' + (cats.length > 1 ? '<button type="button" class="pv-fbtn" aria-haspopup="dialog"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"><path d="M1.5 3.5h11M3.5 7h7M5.5 10.5h3"/></svg><span>Все</span></button>' : '') + '</div><div class="pv-res"></div>';
       var chipsEl = el.querySelector('.pv-chips'), res = el.querySelector('.pv-res'), inp = el.querySelector('.pv-q input'), qx = el.querySelector('.pv-qx');
       if (cats.length < 2) chipsEl.style.display = 'none';
       function setQ(v) { q = v; inp.value = v; pg = 1; render(); }
       var tm; inp.oninput = function () { clearTimeout(tm); tm = setTimeout(function () { q = inp.value; pg = 1; render(); }, 120); };
       inp.onkeydown = function (e) { if (e.key === 'Escape') setQ(''); if (e.key === 'Enter') inp.blur(); };
       qx.onclick = function () { setQ(''); inp.focus(); };
+      var fbtn = el.querySelector('.pv-fbtn');
+      function counts(found) { return [['all', 'Все категории', found.length]].concat(cats.map(function (c) { return [c, c, found.filter(function (g) { return g.cat === c; }).length]; })); }
+      if (fbtn) fbtn.onclick = function () {
+        var found = q.trim() ? list.filter(match) : list;
+        var sh = document.createElement('div'); sh.className = 'pv-sheet'; sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-label', 'Категория');
+        sh.innerHTML = '<div class="pv-sheet-p"><div class="pv-sheet-h"></div><div style="font:700 20px/1.1 ' + UI + ';letter-spacing:-.03em;margin:0 4px 6px">Категория</div>' + counts(found).map(function (c) { return '<button type="button" class="pv-opt" role="radio" data-c="' + esc(c[0]) + '" aria-checked="' + (cur === c[0]) + '"><i></i>' + esc(c[1]) + '<span class="pv-n" style="font-family:' + MONO + ';font-size:12px;opacity:.5">' + c[2] + '</span></button>'; }).join('') + '</div>';
+        document.body.appendChild(sh); var ov = document.body.style.overflow; document.body.style.overflow = 'hidden';
+        requestAnimationFrame(function () { sh.classList.add('on'); });
+        function close() { sh.classList.remove('on'); document.body.style.overflow = ov; setTimeout(function () { sh.remove(); }, 250); }
+        sh.onclick = function (ev) { if (ev.target === sh) close(); };
+        [].forEach.call(sh.querySelectorAll('.pv-opt'), function (b) { b.onclick = function () { cur = b.getAttribute('data-c'); pg = 1; render(); close(); }; });
+      };
       function render() {
         var found = q.trim() ? list.filter(match) : list;
         qx.classList.toggle('on', !!q);
+        if (fbtn) fbtn.querySelector('span').textContent = cur === 'all' ? 'Все' : cur;
         chipsEl.innerHTML = [['all', 'Все', found.length]].concat(cats.map(function (c) { return [c, c, found.filter(function (g) { return g.cat === c; }).length]; })).map(function (c) {
           return '<button type="button" class="pv-chip" data-c="' + esc(c[0]) + '" aria-pressed="' + (cur === c[0]) + '"' + (c[2] || c[0] === 'all' || cur === c[0] ? '' : ' style="opacity:.45"') + '>' + esc(c[1]) + '<span class="pv-n">' + c[2] + '</span></button>';
         }).join('');
