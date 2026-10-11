@@ -44,7 +44,20 @@
     '.pv-ws{display:grid;grid-template-columns:calc(400px + clamp(24px,3vw,48px)) minmax(0,1fr);gap:0;align-items:stretch}.pv-ws>div:first-child{padding-right:clamp(24px,3vw,48px)}.pv-ws>.pv-side{padding-left:clamp(24px,3vw,48px);border-left:1px solid ' + RULE + '}',
     '.pv-side{position:sticky;top:76px;display:flex;flex-direction:column}',
     '@media (max-width:980px){.pv-ws{grid-template-columns:minmax(0,1fr)}.pv-ws>div:first-child{padding:0 0 28px}.pv-ws>.pv-side{position:static;padding:28px 0 0;border-left:0;border-top:1px solid ' + RULE + '}}',
-    '@media (max-width:680px){.pv-hero{grid-template-columns:minmax(0,1fr)}.pv-hero-cover{max-width:240px}}'
+    '@media (max-width:680px){.pv-hero{grid-template-columns:minmax(0,1fr)}.pv-hero-cover{max-width:240px}}',
+    '.pv-bar{display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap;margin-bottom:22px}.pv-bar .pv-chips{margin:0;flex:1 1 auto;min-width:0}',
+    '.pv-q{position:relative;flex:0 1 340px;min-width:220px}.pv-q input{width:100%;height:42px;padding:0 40px 0 42px;border:1px solid ' + RULE + ';border-radius:999px;background:#fff;font:500 14.5px/1 ' + UI + ';letter-spacing:-.01em;color:' + INK + ';outline:0;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none}',
+    '.pv-q input::placeholder{color:#8b8794}.pv-q input:focus{border-color:' + INK + ';box-shadow:0 0 0 3px rgba(20,19,23,.08)}.pv-q input::-webkit-search-cancel-button{display:none}',
+    '.pv-q svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);pointer-events:none}.pv-qx{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:0;border-radius:50%;background:#efedf3;color:' + INK + ';font:500 16px/1 ' + UI + ';cursor:pointer;display:none}.pv-qx.on{display:block}.pv-qx:hover{background:#dddae3}',
+    '.pv-empty{padding:40px 20px;border-radius:20px;background:#fff;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}',
+    '.pv-sug{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}.pv-sug button{padding:8px 13px;border:0;border-radius:999px;background:#efedf3;font:600 13px/1 ' + UI + ';color:' + INK + ';cursor:pointer}.pv-sug button:hover{background:#dddae3}',
+    '.pv-card-m{display:none}',
+    '@media (max-width:640px){.pv-bar{flex-direction:column;align-items:stretch;gap:12px}.pv-q{flex:none;min-width:0;order:-1}.pv-q input{height:46px;font-size:16px}',
+    '.pv-bar .pv-chips{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(-1 * clamp(16px,3vw,32px));padding:0 clamp(16px,3vw,32px);scrollbar-width:none}.pv-bar .pv-chips::-webkit-scrollbar{display:none}.pv-chip{padding:10px 14px;font-size:14px}',
+    '.pv-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.pv-card{border-radius:12px}.pv-card:hover{transform:none;box-shadow:none}',
+    '.pv-card .pv-cv>div{padding:10cqw 8cqw 8cqw!important;aspect-ratio:1/1!important}.pv-card .pv-cv-logo{font-size:9cqw!important;margin:0 0 6cqw!important;text-align:left!important}',
+    '.pv-card .pv-cv-cat{font-size:6cqw!important;padding:2.4cqw 4.6cqw!important}.pv-card .pv-cv-big{font-size:14cqw!important}.pv-card .pv-cv-sub,.pv-card .pv-cv-meta{display:none!important}',
+    '.pv-card-b{padding:8px 8px 10px;gap:4px}.pv-card-t{font-size:12px!important;line-height:1.2!important;letter-spacing:-.01em!important}.pv-card-m{display:block;font-size:10.5px;line-height:1.3;color:' + MUTED + '}.pv-card-go{display:none!important}}'
   ].join('');
   document.head.appendChild(css);
 
@@ -78,13 +91,13 @@
     var pill = 'padding:1.1cqw 2cqw;border-radius:99cqw;background:#f3f2f6;color:' + INK + ';white-space:nowrap';
     return '<div class="pv-cv" style="container-type:inline-size;width:100%"><div style="position:relative;width:100%;aspect-ratio:' + (compact ? 'auto' : '3/4') + ';background:#fff;display:flex;flex-direction:column;padding:' + (compact ? '16cqw 8cqw 6.5cqw' : '8cqw 8cqw 6.5cqw') + ';font-family:' + UI + ';color:' + INK + '">' +
       '<div style="position:absolute;inset:0;overflow:hidden;pointer-events:none"><div style="position:absolute;right:-20cqw;top:-20cqw;width:56cqw;height:56cqw;border-radius:50%;border:.3cqw solid #e8e7ec"></div><div style="position:absolute;right:-8cqw;top:-8cqw;width:34cqw;height:34cqw;border-radius:50%;background:#f1f0f3"></div></div>' +
-      '<div style="position:relative;text-align:center;font-family:Manrope,' + UI + ';font-size:' + (compact ? 7 : 6) + 'cqw;letter-spacing:-.05em;line-height:1;color:' + INK + ';margin:' + (compact ? '-8cqw 0 8cqw' : '0 0 8cqw') + '"><span style="font-weight:300">sher</span><span style="font-weight:800">pa.</span></div>' +
+      '<div class="pv-cv-logo" style="position:relative;text-align:center;font-family:Manrope,' + UI + ';font-size:' + (compact ? 7 : 6) + 'cqw;letter-spacing:-.05em;line-height:1;color:' + INK + ';margin:' + (compact ? '-8cqw 0 8cqw' : '0 0 8cqw') + '"><span style="font-weight:300">sher</span><span style="font-weight:800">pa.</span></div>' +
       '<div style="position:relative;margin-top:auto;display:flex;flex-direction:column;gap:3.4cqw">' +
-        '<span style="align-self:flex-start;padding:1.3cqw 2.4cqw;border-radius:99cqw;background:' + INK + ';' + m(2.3, '#fff') + '">' + esc(g.cat) + '</span>' +
-        '<div style="font-weight:800;font-size:11.4cqw;line-height:.94;letter-spacing:-.045em"><span style="display:block">' + esc(g.big1) + '</span><span style="display:block;color:' + accentOf(g) + '">' + esc(g.big2) + '</span></div>' +
-        '<div style="font-size:4.1cqw;line-height:1.22;font-weight:500;letter-spacing:-.02em;color:' + SOFT + ';max-width:76cqw;text-wrap:balance">' + esc(g.sub) + '</div>' +
+        '<span class="pv-cv-cat" style="align-self:flex-start;padding:1.3cqw 2.4cqw;border-radius:99cqw;background:' + INK + ';' + m(2.3, '#fff') + '">' + esc(g.cat) + '</span>' +
+        '<div class="pv-cv-big" style="font-weight:800;font-size:11.4cqw;line-height:.94;letter-spacing:-.045em"><span style="display:block">' + esc(g.big1) + '</span><span style="display:block;color:' + accentOf(g) + '">' + esc(g.big2) + '</span></div>' +
+        '<div class="pv-cv-sub" style="font-size:4.1cqw;line-height:1.22;font-weight:500;letter-spacing:-.02em;color:' + SOFT + ';max-width:76cqw;text-wrap:balance">' + esc(g.sub) + '</div>' +
       '</div>' +
-      '<div style="position:relative;margin-top:7cqw;padding-top:4.2cqw;border-top:.25cqw solid #e6e3ec;display:grid;grid-template-columns:1.25fr 1fr;gap:4cqw">' +
+      '<div class="pv-cv-meta" style="position:relative;margin-top:7cqw;padding-top:4.2cqw;border-top:.25cqw solid #e6e3ec;display:grid;grid-template-columns:1.25fr 1fr;gap:4cqw">' +
         '<div style="display:flex;flex-direction:column;gap:1.6cqw"><span style="' + m(compact ? 2.8 : 2.1, '#8b8794') + '">Для кого</span><span style="font-size:' + (compact ? 4.6 : 3.3) + 'cqw;line-height:1.25;font-weight:600">' + esc(g.forShort) + '</span></div>' +
         '<div style="display:flex;flex-direction:column;gap:1.6cqw"><span style="' + m(compact ? 2.8 : 2.1, '#8b8794') + '">Уровень</span><span style="font-size:' + (compact ? 4.6 : 3.3) + 'cqw;line-height:1.25;font-weight:600">' + esc(g.level) + '</span></div>' +
       '</div>' +
@@ -93,7 +106,7 @@
   }
   function card(g, total, page) {
     return '<a class="pv-card" href="' + esc(guideHref(page, g)) + '">' + cover(g, total, true) +
-      '<div class="pv-card-b"><span style="font-size:14.5px;line-height:1.25;font-weight:600;letter-spacing:-.015em;text-wrap:balance">' + esc(g.title) + '</span><span style="margin-top:auto;font-size:13.5px;font-weight:600;letter-spacing:-.01em;color:' + ACC + '">Открыть →</span></div></a>';
+      '<div class="pv-card-b"><span class="pv-card-t" style="font-size:14.5px;line-height:1.25;font-weight:600;letter-spacing:-.015em;text-wrap:balance">' + esc(g.title) + '</span><span class="pv-card-m">' + g.pages + ' стр. · ' + esc(g.level) + '</span><span class="pv-card-go" style="margin-top:auto;font-size:13.5px;font-weight:600;letter-spacing:-.01em;color:' + ACC + '">Открыть →</span></div></a>';
   }
 
   function mountCatalog(el) {
@@ -116,16 +129,34 @@
         out.push(b('→', pg + 1, false, pg === n));
         return '<nav class="pv-pager">' + out.map(function (x) { return x === '…' ? '<span class="pv-mono" style="font-size:11px;color:' + MUTED + ';padding:0 4px">…</span>' : x; }).join('') + '</nav>';
       }
+      var q = '', SUG = (el.getAttribute('data-suggest') || 'маркетинг|образование|продукт|EdTech|аналитика|финансы').split('|');
+      function norm(s) { return String(s || '').toLowerCase().replace(/ё/g, 'е'); }
+      list.forEach(function (g) { g.hay = norm([g.title, g.cat, g.big1, g.big2, g.sub, g.lead, g.forShort, g.forWho, g.level, g.caseName, g.teamText, (g.tags || []).join(' ')].join(' ')); });
+      function match(g) {
+        var ws = norm(q).split(/[\s,.;]+/).filter(Boolean);
+        return ws.every(function (w) { var st = w.length > 5 ? w.slice(0, w.length - 2) : w; return g.hay.indexOf(st) > -1; });
+      }
+      el.innerHTML = '<div class="pv-bar"><div class="pv-chips"></div><label class="pv-q"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="' + INK + '" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg><input type="search" enterkeyhint="search" autocomplete="off" placeholder="Поиск: маркетинг, EdTech, SQL…" aria-label="Поиск по гайдам"><button type="button" class="pv-qx" aria-label="Очистить">×</button></label></div><div class="pv-res"></div>';
+      var chipsEl = el.querySelector('.pv-chips'), res = el.querySelector('.pv-res'), inp = el.querySelector('.pv-q input'), qx = el.querySelector('.pv-qx');
+      if (cats.length < 2) chipsEl.style.display = 'none';
+      function setQ(v) { q = v; inp.value = v; pg = 1; render(); }
+      var tm; inp.oninput = function () { clearTimeout(tm); tm = setTimeout(function () { q = inp.value; pg = 1; render(); }, 120); };
+      inp.onkeydown = function (e) { if (e.key === 'Escape') setQ(''); if (e.key === 'Enter') inp.blur(); };
+      qx.onclick = function () { setQ(''); inp.focus(); };
       function render() {
-        var chips = '<div class="pv-chips">' + [['all', 'Все', list.length]].concat(cats.map(function (c) { return [c, c, list.filter(function (g) { return g.cat === c; }).length]; })).map(function (c) {
-          return '<button type="button" class="pv-chip" data-c="' + esc(c[0]) + '" aria-pressed="' + (cur === c[0]) + '">' + esc(c[1]) + '<span class="pv-n">' + c[2] + '</span></button>';
-        }).join('') + '</div>';
-        var all = cur === 'all' ? list : list.filter(function (g) { return g.cat === cur; });
+        var found = q.trim() ? list.filter(match) : list;
+        qx.classList.toggle('on', !!q);
+        chipsEl.innerHTML = [['all', 'Все', found.length]].concat(cats.map(function (c) { return [c, c, found.filter(function (g) { return g.cat === c; }).length]; })).map(function (c) {
+          return '<button type="button" class="pv-chip" data-c="' + esc(c[0]) + '" aria-pressed="' + (cur === c[0]) + '"' + (c[2] || c[0] === 'all' || cur === c[0] ? '' : ' style="opacity:.45"') + '>' + esc(c[1]) + '<span class="pv-n">' + c[2] + '</span></button>';
+        }).join('');
+        var all = cur === 'all' ? found : found.filter(function (g) { return g.cat === cur; });
         var pages = Math.ceil(all.length / per); if (pg > pages) pg = pages || 1;
         var shown = all.slice((pg - 1) * per, pg * per);
-        el.innerHTML = (cats.length > 1 ? chips : '') + '<div class="pv-grid">' + shown.map(function (g) { return card(g, list.total, page); }).join('') + '</div>' + pager(pages);
-        [].forEach.call(el.querySelectorAll('.pv-chip'), function (b) { b.onclick = function () { cur = b.getAttribute('data-c'); pg = 1; render(); }; });
-        [].forEach.call(el.querySelectorAll('.pv-pg'), function (b) { b.onclick = function () { pg = +b.getAttribute('data-p'); render(); var t = el.getBoundingClientRect().top + window.scrollY - 90; window.scrollTo({ top: t, behavior: 'smooth' }); }; });
+        res.innerHTML = all.length ? '<div class="pv-grid">' + shown.map(function (g) { return card(g, list.total, page); }).join('') + '</div>' + pager(pages) :
+          '<div class="pv-empty"><span style="font-size:17px;font-weight:600;letter-spacing:-.02em">' + (q ? 'По запросу «' + esc(q) + '» гайдов пока нет' : 'В этой категории пока пусто') + '</span><span style="font-size:14px;color:' + MUTED + '">Попробуйте другое слово:</span><div class="pv-sug">' + SUG.map(function (s) { return '<button type="button" data-s="' + esc(s) + '">' + esc(s) + '</button>'; }).join('') + '</div></div>';
+        [].forEach.call(chipsEl.querySelectorAll('.pv-chip'), function (b) { b.onclick = function () { cur = b.getAttribute('data-c'); pg = 1; render(); }; });
+        [].forEach.call(res.querySelectorAll('.pv-sug button'), function (b) { b.onclick = function () { cur = 'all'; setQ(b.getAttribute('data-s')); }; });
+        [].forEach.call(res.querySelectorAll('.pv-pg'), function (b) { b.onclick = function () { pg = +b.getAttribute('data-p'); render(); var t = el.getBoundingClientRect().top + window.scrollY - 90; window.scrollTo({ top: t, behavior: 'smooth' }); }; });
       }
       render();
     }).catch(function (e) { console.warn('[pv]', e); el.innerHTML = '<div class="pv-mono" style="font-size:11px;color:' + MUTED + '">Не удалось загрузить каталог</div>'; });

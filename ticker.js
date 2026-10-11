@@ -16,7 +16,7 @@
   function mount(root) {
     if (root.__pvt) return; root.__pvt = 1;
     var A = function (n, d) { var v = root.getAttribute(n); return v == null ? d : v; };
-    var H = +A('data-h', 132), B = +A('data-b', 44), N = +A('data-lanes', 14), K = B / 44, SPEED = 44 * Math.sqrt(K);
+    var MOB = window.innerWidth < 700, H = +A('data-h', 132), B = +A('data-b', 44) * (MOB ? +A('data-m-scale', 0.58) : 1), N = +A('data-lanes', 14), K = B / 44, SPEED = 44 * Math.sqrt(K);
     var nums = A('data-nums', '').split('|').filter(Boolean); if (!nums.length) nums = NUMS;
     var words = A('data-words', '').split('|').filter(Boolean); if (!words.length) words = WORDS;
     var ink = A('data-bg', '#141317'), fg = A('data-fg', '#ffffff'), acc = A('data-accent', '#ff2a1f'), paper = A('data-paper', '#f7f6f9');
@@ -24,6 +24,7 @@
     var AUTO = A('data-h', '') === 'auto';
     root.style.position = 'relative'; if (!AUTO) root.style.height = H + 'px'; root.style.overflow = 'hidden';
     root.setAttribute('role', 'img'); root.setAttribute('aria-label', words.join(', '));
+    if (MOB && A('data-h', '') === 'auto') { root.style.flex = '0 0 auto'; root.style.height = A('data-m-height', '230px'); root.style.minHeight = '0'; var sec = root.parentElement; if (sec) { sec.style.height = 'auto'; sec.style.minHeight = '0'; } }
     var host = root.shadowRoot || (root.attachShadow ? root.attachShadow({ mode: 'open' }) : root);
     var cv = document.createElement('canvas');
     cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block';

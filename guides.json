@@ -20,7 +20,20 @@
         "разработчики CDP"
       ],
       "pdf": "pdf/crm.pdf",
-      "test": "tests/crm.json"
+      "test": "tests/crm.json",
+      "tags": [
+        "CRM",
+        "CDP",
+        "email-рассылки",
+        "retention",
+        "удержание",
+        "сегментация",
+        "Mindbox",
+        "SQL",
+        "e-commerce",
+        "ритейл",
+        "аналитика"
+      ]
     },
     {
       "id": "growth",
@@ -42,7 +55,20 @@
         "юрист по рекламе"
       ],
       "pdf": "pdf/growth.pdf",
-      "test": "tests/growth.json"
+      "test": "tests/growth.json",
+      "tags": [
+        "growth",
+        "performance",
+        "EdTech",
+        "образование",
+        "онлайн-школы",
+        "ДРР",
+        "юнит-экономика",
+        "воронка",
+        "реклама",
+        "B2C",
+        "финансы"
+      ]
     },
     {
       "id": "performance",
@@ -64,7 +90,20 @@
         "руководители приёмных кампаний"
       ],
       "pdf": "pdf/performance.pdf",
-      "test": "tests/performance.json"
+      "test": "tests/performance.json",
+      "tags": [
+        "performance",
+        "трафик",
+        "лидогенерация",
+        "CPL",
+        "CAC",
+        "Директ",
+        "реклама",
+        "посевы",
+        "образование",
+        "вузы",
+        "аналитика"
+      ]
     },
     {
       "id": "product-switch",
@@ -87,7 +126,19 @@
         "тимлиды"
       ],
       "pdf": "pdf/product-switch.pdf",
-      "test": "tests/product-switch.json"
+      "test": "tests/product-switch.json",
+      "tags": [
+        "продукт",
+        "product manager",
+        "PM",
+        "SaaS",
+        "маркетплейс",
+        "custdev",
+        "гипотезы",
+        "A/B-тесты",
+        "смена профессии",
+        "IT"
+      ]
     },
     {
       "id": "product-metrics",
@@ -110,7 +161,20 @@
       ],
       "pdf": "pdf/product-metrics.pdf",
       "test": "tests/product-metrics.json",
-      "color": "#1fd65f"
+      "color": "#1fd65f",
+      "tags": [
+        "продукт",
+        "финансы",
+        "финтех",
+        "юнит-экономика",
+        "P&L",
+        "LTV",
+        "CAC",
+        "метрики",
+        "аналитика",
+        "IT",
+        "SaaS"
+      ]
     },
     {
       "id": "methodist",
@@ -132,7 +196,18 @@
         "специалисты по корпоративному обучению"
       ],
       "pdf": "pdf/methodist.pdf",
-      "test": "tests/methodist.json"
+      "test": "tests/methodist.json",
+      "tags": [
+        "образование",
+        "EdTech",
+        "методист",
+        "педдизайн",
+        "ДПО",
+        "корпоративное обучение",
+        "HR",
+        "учителям",
+        "онлайн-курсы"
+      ]
     }
   ]
 }
