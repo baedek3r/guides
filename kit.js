@@ -66,6 +66,19 @@
   ].join('');
   document.head.appendChild(css);
 
+  var PDF_NAMES = {};
+  function saveBlob(blob, name) { var u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 4000); }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[download]'); if (!a) return;
+    var href = a.href; if (!/\.pdf(\?|#|$)/i.test(href)) return;
+    e.preventDefault();
+    var name = a.getAttribute('data-filename') || PDF_NAMES[href] || decodeURIComponent(href.split('/').pop().split('?')[0]);
+    if (a.dataset.busy) return; a.dataset.busy = '1'; a.style.opacity = '.6';
+    fetch(href, { mode: 'cors' }).then(function (r) { if (!r.ok) throw r.status; return r.blob(); })
+      .then(function (b) { saveBlob(b, name); })
+      .catch(function () { window.open(href, '_blank', 'noopener'); })
+      .then(function () { delete a.dataset.busy; a.style.opacity = ''; });
+  }, true);
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function load(src) {
     return new Promise(function (res, rej) {
@@ -80,7 +93,7 @@
       var list = (d.guides || d).filter(function (g) { return !g.hidden; });
       list.forEach(function (g, i) {
         g.idx = String(i + 1).padStart(2, '0');
-        g.pdfUrl = new URL(g.pdf, url).href;
+        g.pdfUrl = new URL(g.pdf, url).href; g.pdfName = 'sherpa — ' + g.title.replace(/[\\/:*?"<>|]/g, ' ').replace(/\s+/g, ' ').trim() + '.pdf'; PDF_NAMES[g.pdfUrl] = g.pdfName;
         g.testUrl = g.test ? new URL(g.test, url).href : '';
         g.teamText = (g.team || []).join(', ');
       });
@@ -205,7 +218,7 @@
             '<h1 style="margin:0;font-family:' + UI + ';font-weight:700;font-size:clamp(32px,4vw,56px);line-height:1;letter-spacing:-.05em;text-wrap:balance">' + esc(g.title) + '</h1>' +
             (g.lead ? '<p style="margin:0;max-width:62ch;font-size:15.5px;line-height:1.55;text-wrap:pretty">' + esc(g.lead) + '</p>' : '') +
             '<div style="background:#fff;border-radius:20px;padding:6px 20px">' + specs.map(function (s) { return '<div class="pv-spec"><span class="pv-mono" style="font-size:10px;color:' + MUTED + '">' + s[0] + '</span><span style="font-size:14.5px;line-height:1.45">' + esc(s[1]) + '</span></div>'; }).join('') + '</div>' +
-            '<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="pv-btn dark" href="' + esc(g.pdfUrl) + '" download target="_blank" rel="noopener">Скачать PDF</a></div>' +
+            '<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="pv-btn dark" href="' + esc(g.pdfUrl) + '" download="' + esc(g.pdfName) + '" data-filename="' + esc(g.pdfName) + '" target="_blank" rel="noopener">Скачать PDF</a></div>' +
           '</div>' +
         '</section>' +
         '<section id="pv-read" class="pv-ws" style="padding:clamp(20px,2.6vw,32px) 0">' +
