@@ -552,7 +552,100 @@
       draw();
     }).catch(function (e) { console.warn('[pv]', e); el.innerHTML = '<div class="pv-mono" style="font-size:11px;color:' + MUTED + '">Не удалось загрузить каталог</div>'; });
   }
+  /* ---------- переливающиеся буквы ---------- */
+  var JUICE = ['#c6ff00', '#ff2bd6', '#00e5ff', '#ffd400', '#ff5a1f', '#5cff8a', '#8a5cff', '#ff2a1f'];
+  function mountJuice(el) {
+    if (el.__pvj) return; el.__pvj = 1;
+    var txt = el.textContent, base = el.getAttribute('data-base') || '#ff2a1f', pal = (el.getAttribute('data-pv-juice') || '').split(',').filter(Boolean); if (!pal.length) pal = JUICE;
+    el.setAttribute('aria-label', txt); el.textContent = '';
+    var L = [];
+    txt.split('').forEach(function (ch) {
+      var s = document.createElement('span'); s.setAttribute('aria-hidden', 'true'); s.textContent = ch;
+      if (ch.trim()) { s.style.cssText = 'color:' + base + ';transition:color .6s cubic-bezier(.3,.7,.3,1)'; L.push(s); }
+      el.appendChild(s);
+    });
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var last = -1;
+    function tick() {
+      if (!el.isConnected) return;
+      if (!document.hidden) {
+        for (var i = 0; i < 1; i++) {
+          var j; do { j = Math.floor(Math.random() * L.length); } while (j === last && L.length > 1); last = j;
+          var c = L[j], cur = c.style.color, nc; do { nc = pal[Math.floor(Math.random() * pal.length)]; } while (pal.length > 1 && cur.indexOf(nc) > -1);
+          c.style.color = nc;
+          (function (c) { setTimeout(function () { c.style.color = base; }, 900 + Math.random() * 500); })(c);
+        }
+      }
+      setTimeout(tick, 280 + Math.random() * 220);
+    }
+    setTimeout(tick, 400);
+  }
+  /* ---------- печатающийся заголовок ---------- */
+  var TYPE_DEF = [
+    ['собранные из ', 'реальных вакансий'],
+    ['которые показывают ', 'первый день на работе'],
+    ['чтобы понять, ', 'подходит ли тебе профессия'],
+    ['где каждый навык взят ', 'из требований работодателей'],
+    ['с которыми проще ', 'пройти собеседование'],
+    ['чтобы сменить ', 'профессию без лишних курсов'],
+    ['которые объясняют, ', 'за что платят деньги'],
+    ['с честными ', 'зарплатами и вилками'],
+    ['чтобы знать, ', 'с чего начать завтра'],
+    ['проверенные ', 'практиками из индустрии'],
+    ['с картой ', 'роста от джуна до лида'],
+    ['чтобы говорить ', 'на языке команды'],
+    ['с кейсами ', 'из реальных компаний'],
+    ['которые читаются ', 'за один вечер']
+  ];
+  function mountType(el) {
+    if (el.__pvt2) return; el.__pvt2 = 1;
+    var pre = el.getAttribute('data-prefix') || 'Гайды по профессиям, ', base = el.getAttribute('data-base') || '#ff2a1f';
+    var hold = +(el.getAttribute('data-hold') || 10000), P = TYPE_DEF;
+    try { var cu = JSON.parse(el.getAttribute('data-phrases') || 'null'); if (cu && cu.length) P = cu; } catch (e) {}
+    el.setAttribute('aria-label', pre + P[0][0] + P[0][1]);
+    el.innerHTML = '';
+    var a = document.createElement('span'); a.setAttribute('aria-hidden', 'true'); a.textContent = pre;
+    var plain = document.createElement('span'); plain.setAttribute('aria-hidden', 'true');
+    var hi = document.createElement('span'); hi.setAttribute('aria-hidden', 'true'); hi.style.cssText = 'color:inherit';
+    var car = document.createElement('span'); car.setAttribute('aria-hidden', 'true');
+    car.style.cssText = 'display:inline-block;width:.06em;min-width:2px;height:.92em;margin-left:.06em;vertical-align:-.1em;background:currentColor;border-radius:1px;animation:pvCaret 1s steps(1) infinite';
+    el.appendChild(a); el.appendChild(plain); el.appendChild(hi); el.appendChild(car);
+    if (!document.getElementById('pv-caret-kf')) { var st = document.createElement('style'); st.id = 'pv-caret-kf'; st.textContent = '@keyframes pvCaret{0%,49%{opacity:1}50%,100%{opacity:0}}'; document.head.appendChild(st); }
+    var letters = [];
+    function setText(n, ph) {
+      var full = ph[0] + ph[1], s = full.slice(0, n), p1 = s.slice(0, ph[0].length), p2 = s.slice(ph[0].length);
+      plain.textContent = p1;
+      while (letters.length > p2.length) hi.removeChild(letters.pop());
+      while (letters.length < p2.length) { var L = document.createElement('span'); L.textContent = p2[letters.length]; L.style.transition = 'color .6s cubic-bezier(.3,.7,.3,1)'; hi.appendChild(L); letters.push(L); }
+    }
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var pi = 0; setText(P[0][0].length + P[0][1].length, P[0]);
+    if (reduce) { car.style.display = 'none'; return; }
+    // flicker: one letter at a time
+    (function flick() {
+      return;
+      var pool = letters.filter(function (l) { return l.textContent.trim(); });
+      if (!document.hidden && pool.length) { var c = pool[Math.floor(Math.random() * pool.length)], nc = JUICE[Math.floor(Math.random() * JUICE.length)]; c.style.color = nc; setTimeout(function () { c.style.color = ''; }, 900 + Math.random() * 500); }
+      setTimeout(flick, 280 + Math.random() * 220);
+    })();
+    function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+    function vis() { return new Promise(function (r) { if (!document.hidden) return r(); var f = function () { if (!document.hidden) { document.removeEventListener('visibilitychange', f); r(); } }; document.addEventListener('visibilitychange', f); }); }
+    function steady(on) { car.style.animation = on ? 'pvCaret 1s steps(1) infinite' : 'none'; car.style.opacity = '1'; }
+    (async function loop() {
+      while (el.isConnected) {
+        steady(true); await wait(hold); await vis();
+        var ph = P[pi], n = ph[0].length + ph[1].length; steady(false);
+        while (n > 0) { n = Math.max(0, n - 3); setText(n, ph); await wait(10); }
+        await wait(180);
+        pi = (pi + 1) % P.length; ph = P[pi]; var tot = ph[0].length + ph[1].length;
+        el.setAttribute('aria-label', pre + ph[0] + ph[1]);
+        for (var i = 1; i <= tot; i++) { setText(i, ph); var ch = (ph[0] + ph[1])[i - 1]; await wait(ch === ' ' ? 18 + Math.random() * 16 : ch === ',' ? 70 : 9 + Math.random() * 11); }
+      }
+    })();
+  }
   function scan() {
+    document.querySelectorAll('[data-pv-type]').forEach(mountType);
+    document.querySelectorAll('[data-pv-juice]').forEach(mountJuice);
     document.querySelectorAll('[data-catalog-list]').forEach(mountList);
     document.querySelectorAll('[data-pv-theme]').forEach(paintToggle);
     document.querySelectorAll('[data-pv-cmdk]').forEach(mountK);
