@@ -24,7 +24,7 @@
     var MOB = window.innerWidth < 700, H = +A('data-h', 132), B = +A('data-b', 44) * (MOB ? +A('data-m-scale', 0.58) : 1), N = +A('data-lanes', 14), K = B / 44, SPEED = 44 * Math.sqrt(K);
     var nums = A('data-nums', '').split('|').filter(Boolean); if (!nums.length) nums = NUMS;
     var words = A('data-words', '').split('|').filter(Boolean); if (!words.length) words = WORDS;
-    var THEMED = !root.hasAttribute('data-bg'), FC = 0;
+    var THEMED = false, FC = 0;
     var ink = A('data-bg', '#141317'), fg = A('data-fg', '#ffffff'), acc = A('data-accent', '#ff2a1f'), paper = A('data-paper', '#f7f6f9');
     var JUICE = A('data-colors', '#c6ff00:#141317|#ff2bd6:#fff|#00e5ff:#141317|#ffd400:#141317|#ff5a1f:#fff|#5cff8a:#141317|#8a5cff:#fff|' + acc + ':#fff').split('|').map(function (s) { var p = s.split(':'); return { bg: p[0], fg: p[1] || '#fff' }; });
     var labL = A('data-label-left', ''), labR = A('data-label-right', '');
