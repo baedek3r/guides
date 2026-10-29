@@ -5,8 +5,9 @@
   var V = '4.4.168', B = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + V + '/build/';
   var lib;
   function pdfjs() { return lib || (lib = import(B + 'pdf.min.mjs').then(function (m) { m.GlobalWorkerOptions.workerSrc = B + 'pdf.worker.min.mjs'; return m; })); }
-  var INK = '#141317', PAPER = '#f7f6f9', RULE = '#dddae3', MUTED = '#7d7986', DESK = '#efedf3', ACC = '#141317', CHIP = '#e9e7ee';
-  var MONO = "'JetBrains Mono',ui-monospace,monospace", UI = "'Onest','Helvetica Neue',Helvetica,Arial,sans-serif";
+  var T = window.FlipbookTheme || {};
+  var INK = T.ink || '#141317', PAPER = T.paper || '#f7f6f9', RULE = T.rule || '#dddae3', MUTED = T.muted || '#7d7986', DESK = T.desk || '#efedf3', ACC = T.accent || INK, CHIP = T.chip || '#e9e7ee';
+  var MONO = T.mono || "'JetBrains Mono',ui-monospace,monospace", UI = T.font || "'Onest','Helvetica Neue',Helvetica,Arial,sans-serif", RAD = T.radius || '24px';
   var st = document.createElement('style');
   st.textContent = [
     '.fb-r{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;margin:0;cursor:pointer}',
@@ -45,7 +46,7 @@
     root.__fb = S; instances.push(S);
     var baseH = root.getAttribute('data-height') || 'min(88vh,1000px)';
     root.innerHTML = '';
-    Object.assign(root.style, { position: 'relative', display: 'flex', flexDirection: 'column', background: '#fff', border: 0, borderRadius: '24px', overflow: 'hidden', fontFamily: UI, color: INK, userSelect: 'none' });
+    Object.assign(root.style, { position: 'relative', display: 'flex', flexDirection: 'column', background: '#fff', border: 0, borderRadius: RAD, overflow: 'hidden', fontFamily: UI, color: INK, userSelect: 'none' });
 
     /* toolbar */
     var chBtn = btn('', { flex: '1 1 auto', minWidth: 0, justifyContent: 'flex-start', gap: '8px', padding: '0 12px 0 14px' }, { title: 'Содержание' });
@@ -194,6 +195,7 @@
     function ui() {
       var vis = visible();
       counter.textContent = (vis.length > 1 ? vis[0] + '–' + vis[1] : vis[0]) + ' / ' + S.total;
+      try { root.dispatchEvent(new CustomEvent('pv:page', { bubbles: true, detail: { page: vis[vis.length - 1], total: S.total } })); } catch (e) {}
       range.max = String(S.total); range.value = String(vis[vis.length - 1]);
       range.style.setProperty('--p', (S.total > 1 ? ((vis[vis.length - 1] - 1) / (S.total - 1)) * 100 : 0) + '%');
       prevB.disabled = S.cur <= 1; nextB.disabled = vis[vis.length - 1] >= S.total;
@@ -365,7 +367,7 @@
     viewB.onclick = function () { S.view = S.view === 'spread' ? 'page' : 'spread'; S.zoom = 1; layout(); };
     function setFull(on) {
       S.full = on;
-      Object.assign(root.style, on ? { position: 'fixed', inset: '0', zIndex: '99999', borderRadius: '0' } : { position: 'relative', inset: 'auto', zIndex: 'auto', borderRadius: '24px' });
+      Object.assign(root.style, on ? { position: 'fixed', inset: '0', zIndex: '99999', borderRadius: '0' } : { position: 'relative', inset: 'auto', zIndex: 'auto', borderRadius: RAD });
       vp.style.height = on ? 'auto' : baseH; vp.style.flex = on ? '1 1 auto' : 'none';
       document.documentElement.style.overflow = on ? 'hidden' : '';
       fsB.textContent = on ? '✕' : '⤢';

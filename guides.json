@@ -33,7 +33,22 @@
         "e-commerce",
         "ритейл",
         "аналитика"
-      ]
+      ],
+      "market": {
+        "demo": true,
+        "vacancies": 1840,
+        "trend": 9,
+        "salary": "120–220 тыс. ₽",
+        "skills": [
+          "CRM",
+          "CDP",
+          "email-рассылки",
+          "retention",
+          "удержание"
+        ],
+        "source": "hh.ru",
+        "updated": "октябрь 2026"
+      }
     },
     {
       "id": "growth",
@@ -68,7 +83,22 @@
         "реклама",
         "B2C",
         "финансы"
-      ]
+      ],
+      "market": {
+        "demo": true,
+        "vacancies": 960,
+        "trend": 14,
+        "salary": "150–280 тыс. ₽",
+        "skills": [
+          "growth",
+          "performance",
+          "EdTech",
+          "образование",
+          "онлайн-школы"
+        ],
+        "source": "hh.ru",
+        "updated": "октябрь 2026"
+      }
     },
     {
       "id": "performance",
@@ -103,7 +133,22 @@
         "образование",
         "вузы",
         "аналитика"
-      ]
+      ],
+      "market": {
+        "demo": true,
+        "vacancies": 2310,
+        "trend": 6,
+        "salary": "110–230 тыс. ₽",
+        "skills": [
+          "performance",
+          "трафик",
+          "лидогенерация",
+          "CPL",
+          "CAC"
+        ],
+        "source": "hh.ru",
+        "updated": "октябрь 2026"
+      }
     },
     {
       "id": "product-switch",
@@ -138,7 +183,22 @@
         "A/B-тесты",
         "смена профессии",
         "IT"
-      ]
+      ],
+      "market": {
+        "demo": true,
+        "vacancies": 3120,
+        "trend": 11,
+        "salary": "180–350 тыс. ₽",
+        "skills": [
+          "продукт",
+          "product manager",
+          "PM",
+          "SaaS",
+          "маркетплейс"
+        ],
+        "source": "hh.ru",
+        "updated": "октябрь 2026"
+      }
     },
     {
       "id": "product-metrics",
@@ -174,7 +234,22 @@
         "аналитика",
         "IT",
         "SaaS"
-      ]
+      ],
+      "market": {
+        "demo": true,
+        "vacancies": 2650,
+        "trend": 8,
+        "salary": "200–380 тыс. ₽",
+        "skills": [
+          "продукт",
+          "финансы",
+          "финтех",
+          "юнит-экономика",
+          "P&L"
+        ],
+        "source": "hh.ru",
+        "updated": "октябрь 2026"
+      }
     },
     {
       "id": "methodist",
@@ -207,7 +282,22 @@
         "HR",
         "учителям",
         "онлайн-курсы"
-      ]
+      ],
+      "market": {
+        "demo": true,
+        "vacancies": 1470,
+        "trend": 4,
+        "salary": "80–160 тыс. ₽",
+        "skills": [
+          "образование",
+          "EdTech",
+          "методист",
+          "педдизайн",
+          "ДПО"
+        ],
+        "source": "hh.ru",
+        "updated": "октябрь 2026"
+      }
     },
     {
       "id": "own-product",
@@ -285,7 +375,22 @@
         "финансовая модель",
         "инвестиции",
         "рост"
-      ]
+      ],
+      "market": {
+        "demo": true,
+        "vacancies": 2890,
+        "trend": 10,
+        "salary": "190–360 тыс. ₽",
+        "skills": [
+          "IT-продукт",
+          "стартап",
+          "SaaS",
+          "B2B",
+          "custdev"
+        ],
+        "source": "hh.ru",
+        "updated": "октябрь 2026"
+      }
     },
     {
       "id": "project-manager",
@@ -326,7 +431,22 @@
         "стейкхолдеры",
         "софт скиллы",
         "собеседование"
-      ]
+      ],
+      "market": {
+        "demo": true,
+        "vacancies": 4380,
+        "trend": 5,
+        "salary": "130–260 тыс. ₽",
+        "skills": [
+          "project manager",
+          "управление проектами",
+          "PMBOK",
+          "Agile",
+          "Scrum"
+        ],
+        "source": "hh.ru",
+        "updated": "октябрь 2026"
+      }
     },
     {
       "id": "prompt-engineering",
@@ -367,7 +487,22 @@
         "prompt injection",
         "243-ФЗ",
         "AI Act"
-      ]
+      ],
+      "market": {
+        "demo": true,
+        "vacancies": 690,
+        "trend": 38,
+        "salary": "140–300 тыс. ₽",
+        "skills": [
+          "промты",
+          "prompt engineering",
+          "LLM",
+          "ChatGPT",
+          "GigaChat"
+        ],
+        "source": "hh.ru",
+        "updated": "октябрь 2026"
+      }
     }
   ]
 }

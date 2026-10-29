@@ -24,7 +24,9 @@
     var MOB = window.innerWidth < 700, H = +A('data-h', 132), B = +A('data-b', 44) * (MOB ? +A('data-m-scale', 0.58) : 1), N = +A('data-lanes', 14), K = B / 44, SPEED = 44 * Math.sqrt(K);
     var nums = A('data-nums', '').split('|').filter(Boolean); if (!nums.length) nums = NUMS;
     var words = A('data-words', '').split('|').filter(Boolean); if (!words.length) words = WORDS;
+    var THEMED = !root.hasAttribute('data-bg'), FC = 0;
     var ink = A('data-bg', '#141317'), fg = A('data-fg', '#ffffff'), acc = A('data-accent', '#ff2a1f'), paper = A('data-paper', '#f7f6f9');
+    var JUICE = A('data-colors', '#c6ff00:#141317|#ff2bd6:#fff|#00e5ff:#141317|#ffd400:#141317|#ff5a1f:#fff|#5cff8a:#141317|#8a5cff:#fff|' + acc + ':#fff').split('|').map(function (s) { var p = s.split(':'); return { bg: p[0], fg: p[1] || '#fff' }; });
     var labL = A('data-label-left', ''), labR = A('data-label-right', '');
     var AUTO = A('data-h', '') === 'auto';
     root.style.position = 'relative'; if (!AUTO) root.style.height = H + 'px'; root.style.overflow = 'hidden';
@@ -56,7 +58,7 @@
     var packets = [];
     var skills = A('data-skills', '').split('|').filter(Boolean); if (!skills.length) skills = SKILLS;
     var NP = Math.ceil(N * 0.6);
-    for (var p = 0; p < NP; p++) packets.push({ lane: Math.floor(p * N / NP), u: (p * 0.618) % 1, seed: Math.floor(R() * 997) });
+    for (var p = 0; p < NP; p++) packets.push({ lane: Math.floor(p * N / NP), u: (p * 0.618) % 1, seed: Math.floor(R() * 997), c: p % JUICE.length });
 
     if (AUTO) H = Math.max(160, root.clientHeight || 300);
     var CY = H / 2 + 6 * K, TOP = 12 * K, BOT = H - 6 * K;
@@ -100,6 +102,7 @@
       if (!root.isConnected) return;
       var dt = Math.min(0.05, (now - last) / 1000); last = now;
       var t = reduce ? 0 : (now - t0) / 1000, z = zone(), y0 = CY - B / 2;
+      if (THEMED && !(FC++ % 20)) { var cs = getComputedStyle(root), v1 = cs.getPropertyValue('--pv-tk-ink').trim(), v2 = cs.getPropertyValue('--pv-tk-fg').trim(); if (/^#[0-9a-f]{6}$/i.test(v1)) ink = v1; if (/^#[0-9a-f]{6}$/i.test(v2)) fg = v2; }
       ctx.clearRect(0, 0, W, H);
 
       band(0, z.xa + 2, numStr, numW, t * SPEED, FN, y0);
@@ -122,15 +125,15 @@
       var PF = Math.max(9.5, 7.5 * K); ctx.font = '600 ' + PF.toFixed(1) + 'px ' + MONO; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       for (var k = 0; k < packets.length; k++) {
         var P = packets[k], L2 = lanes[P.lane], g2 = laneU(L2, 0, z);
-        if (!reduce) { P.u += dt * SPEED * L2.sp / (g2.b - g2.a); if (P.u > 1) { P.u -= 1; P.seed = Math.floor(Math.random() * 997); } }
+        if (!reduce) { P.u += dt * SPEED * L2.sp / (g2.b - g2.a); if (P.u > 1) { P.u -= 1; P.seed = Math.floor(Math.random() * 997); P.c = Math.floor(Math.random() * JUICE.length); } }
         var u2 = P.u, f2 = bul(u2); if (f2 < 0.72) continue;
         var px = g2.a + u2 * (g2.b - g2.a), py = yAt(L2, u2, t);
         var scr = ss(0.40, 0.47, u2) * (1 - ss(0.56, 0.63, u2));
         var ch = skills[P.seed % skills.length];
         var tw = ctx.measureText(ch).width + PF * 1.1, th2 = PF * 1.75;
         ctx.globalAlpha = ss(0.72, 0.88, f2);
-        ctx.fillStyle = scr > 0.5 ? acc : ink; rr(px - tw / 2, py - th2 / 2, tw, th2, th2 / 2); ctx.fill();
-        ctx.fillStyle = '#fff'; ctx.fillText(ch, px, py + 0.5);
+        var C = JUICE[P.c]; ctx.fillStyle = scr > 0.5 ? C.bg : ink; rr(px - tw / 2, py - th2 / 2, tw, th2, th2 / 2); ctx.fill();
+        ctx.fillStyle = scr > 0.5 ? C.fg : fg; ctx.fillText(ch, px, py + 0.5);
       }
       ctx.globalAlpha = 1; ctx.textAlign = 'start';
 
