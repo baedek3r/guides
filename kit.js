@@ -600,7 +600,7 @@
   function mountType(el) {
     if (el.__pvt2) return; el.__pvt2 = 1;
     var pre = el.getAttribute('data-prefix') || 'Гайды по профессиям, ', base = el.getAttribute('data-base') || '#ff2a1f';
-    var hold = +(el.getAttribute('data-hold') || 10000), P = TYPE_DEF;
+    var hold = +(el.getAttribute('data-hold') || 6000), P = TYPE_DEF;
     try { var cu = JSON.parse(el.getAttribute('data-phrases') || 'null'); if (cu && cu.length) P = cu; } catch (e) {}
     el.setAttribute('aria-label', pre + P[0][0] + P[0][1]);
     el.innerHTML = '';
@@ -639,7 +639,7 @@
         await wait(180);
         pi = (pi + 1) % P.length; ph = P[pi]; var tot = ph[0].length + ph[1].length;
         el.setAttribute('aria-label', pre + ph[0] + ph[1]);
-        for (var i = 1; i <= tot; i++) { setText(i, ph); var ch = (ph[0] + ph[1])[i - 1]; await wait(ch === ' ' ? 18 + Math.random() * 16 : ch === ',' ? 70 : 9 + Math.random() * 11); }
+        for (var i = 1; i <= tot; i++) { setText(i, ph); var ch = (ph[0] + ph[1])[i - 1]; await wait(ch === ' ' ? 40 + Math.random() * 30 : ch === ',' ? 140 : 24 + Math.random() * 22); }
       }
     })();
   }
