@@ -621,7 +621,7 @@
   function mountType(el) {
     if (el.__pvt2) return; el.__pvt2 = 1;
     var pre = el.getAttribute('data-prefix') || 'Гайды по профессиям, ', base = el.getAttribute('data-base') || '#ff2a1f';
-    var hold = +(el.getAttribute('data-hold') || 2500), P = TYPE_DEF;
+    var hold = +(el.getAttribute('data-hold') || 4000), P = TYPE_DEF;
     try { var cu = JSON.parse(el.getAttribute('data-phrases') || 'null'); if (cu && cu.length) P = cu; } catch (e) {}
     el.setAttribute('aria-label', pre + P[0][0] + P[0][1]);
     el.innerHTML = '';
@@ -644,6 +644,18 @@
     var pi = Math.floor(Math.random() * P.length), first = true; paint(pi);
     el.setAttribute('aria-label', pre + P[pi][0] + P[pi][1]);
     if (reduce) { setText(P[pi][0].length + P[pi][1].length, P[pi]); car.style.display = 'none'; return; }
+    var fw = -1;
+    function fit() {
+      var box = getComputedStyle(el).display === 'inline' ? el.parentElement : el;
+      var w = box.clientWidth; if (!w || w === fw) return; fw = w;
+      var m = box.cloneNode(false); m.removeAttribute('data-pv-type'); m.removeAttribute('aria-label');
+      m.style.cssText += ';position:absolute;visibility:hidden;pointer-events:none;left:0;top:0;height:auto;min-height:0;width:' + w + 'px';
+      box.parentNode.appendChild(m); var mx = 0;
+      P.forEach(function (ph) { m.textContent = pre + ph[0] + ph[1] + '\u2009'; mx = Math.max(mx, m.offsetHeight); });
+      m.remove(); if (mx) { box.style.height = mx + 'px'; box.style.minHeight = mx + 'px'; }
+    }
+    fit(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fw = -1; fit(); });
+    window.addEventListener('resize', fit);
     setText(0, P[pi]);
     // flicker: one letter at a time
     (function flick() {
@@ -662,8 +674,8 @@
         else {
           steady(true); await wait(hold); await vis();
           var n = ph[0].length + ph[1].length; steady(false);
-          while (n > 0) { n--; setText(n, ph); await wait(9); }
-          await wait(160);
+          while (n > 0) { n--; setText(n, ph); await wait(32); }
+          await wait(260);
           pi = (pi + 1) % P.length; ph = P[pi]; paint(pi);
         }
         steady(false); var tot = ph[0].length + ph[1].length;
