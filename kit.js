@@ -48,7 +48,7 @@
     '.pv-Lc{display:flex;gap:6px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--pv-rule)}.pv-Lc button{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border:1px solid var(--pv-rule);border-radius:6px;background:transparent;color:var(--pv-ink);font:500 12.5px/1 ' + UI + ';cursor:pointer;transition:background .15s,border-color .15s}.pv-Lc button:hover{background:var(--pv-chip)}.pv-Lc button[aria-pressed=true]{background:var(--pv-ink);border-color:var(--pv-ink);color:var(--pv-bg)}.pv-Lc button i{font:500 10.5px/1 ' + MONO + ';font-style:normal;opacity:.55}',
     'a.pv-k-r{text-decoration:none!important;color:var(--pv-ink)!important}.pv-k-r .pv-go{display:none}.pv-k-r[aria-selected=true] .pv-go{display:inline}.pv-k-r[aria-selected=true] .pv-k-t2{display:none}',
     '.pv-Ld{position:sticky;top:76px;background:var(--pv-card);border:1px solid var(--pv-rule);border-radius:12px;padding:16px;font-size:13px;line-height:1.45}',
-    '.pv-k-pg{display:none}@media (max-width:640px){.pv-L .pv-k-f{display:none}.pv-L .pv-k-r{min-height:60px;grid-template-columns:28px minmax(0,1fr);align-items:start;padding:10px}.pv-L .pv-k-r>span:last-child{display:none}.pv-L .pv-k-r .pv-k-sw{margin-top:1px}.pv-L .pv-k-r b{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px;text-wrap:pretty}.pv-L .pv-k-r small{margin-top:3px}.pv-k-pg{display:inline}}',
+    '.pv-k-pg{display:none}@media (max-width:640px){.pv-L .pv-k-f{display:none}.pv-L .pv-k-r{min-height:60px;grid-template-columns:28px minmax(0,1fr);align-items:start;padding:10px}.pv-L .pv-k-r>span:last-child{display:none}.pv-L .pv-k-r .pv-k-sw{margin-top:1px}.pv-L .pv-k-r b{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px;text-wrap:pretty}.pv-L .pv-k-r small{margin-top:3px}.pv-Lc{display:none!important}.pv-L .pv-fbtn{display:inline-flex;height:38px;padding:0 12px;margin-right:-6px;font-size:13px}}',
     '.pv-pulse{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--pv-rule);border:1px solid var(--pv-rule);border-radius:10px;overflow:hidden}.pv-pulse>div{background:var(--pv-card);padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}',
     '.pv-up{color:#12a150}.pv-dn{color:#e5341f}:root[data-theme=dark] .pv-up{color:#3ddc84}',
     '.pv,.pv *{box-sizing:border-box}.pv{font-family:' + UI + ';color:' + INK + ';font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}',
@@ -291,7 +291,7 @@
       [].forEach.call(el.querySelectorAll('[data-jump]'), function (a) {
         a.onclick = function (e) { var t = document.getElementById(a.getAttribute('data-jump')); if (!t) return; e.preventDefault(); window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' }); };
       });
-      load(BASE + 'flipbook.js?v=18'); if (g.testUrl) load(BASE + 'quiz.js?v=18');
+      load(BASE + 'flipbook.js?v=19'); if (g.testUrl) load(BASE + 'quiz.js?v=18');
     }).catch(function (e) { console.warn('[pv]', e); el.innerHTML = '<div class="pv-mono" style="font-size:11px;color:' + MUTED + '">Не удалось загрузить гайд</div>'; });
   }
 
@@ -502,7 +502,7 @@
       var cats = []; list.forEach(function (g) { if (cats.indexOf(g.cat) < 0) cats.push(g.cat); });
       var cur = 'all', sel = 0, rows = [];
       try { var qc = new URLSearchParams(location.search).get('cat'); if (qc && cats.indexOf(qc) > -1) cur = qc; } catch (e) {}
-      el.innerHTML = '<div class="pv-Lw"><div class="pv-L"><label class="pv-k-i" style="background:var(--pv-card);z-index:2"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="color:var(--pv-muted)"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg><input type="search" enterkeyhint="search" autocomplete="off" spellcheck="false" placeholder="Профессия, навык или термин: SQL, LTV, Figma…" aria-label="Поиск по гайдам"></label>' +
+      el.innerHTML = '<div class="pv-Lw"><div class="pv-L"><label class="pv-k-i" style="background:var(--pv-card);z-index:2"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="color:var(--pv-muted)"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg><input type="search" enterkeyhint="search" autocomplete="off" spellcheck="false" placeholder="Профессия, навык или термин: SQL, LTV, Figma…" aria-label="Поиск по гайдам">' + (cats.length > 1 ? '<button type="button" class="pv-fbtn" aria-haspopup="dialog"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1.5 3.5h11M3.5 7h7M5.5 10.5h3"/></svg><span>Все</span></button>' : '') + '</label>' +
         (cats.length > 1 ? '<div class="pv-Lc" role="group" aria-label="Категории"></div>' : '') +
         '<div class="pv-k-l" role="listbox"></div>' +
         '<div class="pv-k-f"><span><span class="pv-kbd">↑</span><span class="pv-kbd">↓</span>выбрать</span><span><span class="pv-kbd">↵</span>открыть</span>' + (cards ? '<a href="' + esc(cards) + '" style="margin-left:auto;color:var(--pv-ink);font-weight:500">Полный каталог →</a>' : '') + '</div></div></div>';
@@ -534,6 +534,7 @@
           return { g: g, s: s, tag: tag };
         }).filter(Boolean);
         if (ws.length) found.sort(function (a, b) { return b.s - a.s; });
+        lastFound = found; if (fb) fb.querySelector('span').textContent = cur === 'all' ? 'Направления' : cur;
         if (chips) chips.innerHTML = [['all', 'Все', found.length]].concat(cats.map(function (c) { return [c, c, found.filter(function (x) { return x.g.cat === c; }).length]; })).map(function (c) { return '<button type="button" data-c="' + esc(c[0]) + '" aria-pressed="' + (cur === c[0]) + '"' + (c[2] || c[0] === 'all' || cur === c[0] ? '' : ' style="opacity:.4"') + '>' + esc(c[1]) + '<i>' + c[2] + '</i></button>'; }).join('');
         if (cur !== 'all' && found.length && !found.some(function (x) { return x.g.cat === cur; })) { cur = 'all'; return draw(); }
         var shown = cur === 'all' ? found : found.filter(function (x) { return x.g.cat === cur; });
@@ -551,8 +552,8 @@
           html += '<div class="pv-k-h">' + esc(gr[0]) + '</div>';
           gr[1].forEach(function (x) {
             var g = x.g, pr = prog(g.id), href = guideHref(page, g) + (x.cont ? '#pv-read' : '');
-            var right = x.tag ? '<span class="pv-k-t pv-k-t2">#' + esc(x.tag) + '</span>' : pr ? '<span class="pv-k-t2" style="display:flex;align-items:center;gap:8px"><span class="pv-prog" style="width:48px"><i style="width:' + pr.pct + '%;background:' + accentOf(g) + '"></i></span><span class="pv-k-t">' + pr.pct + '%</span></span>' : '<span class="pv-k-t pv-k-t2">' + g.pages + ' стр.</span>';
-            html += '<a class="pv-k-r pv-row" role="option" data-id="' + esc(g.id) + '" data-i="' + rows.length + '" href="' + esc(href) + '"><span class="pv-k-sw" style="background:' + accentOf(g) + '">' + esc(g.cat.slice(0, 1)) + '</span><span style="min-width:0"><b>' + hl(g.title, ws) + '</b><small>' + esc(g.level) + ' · ' + esc(g.forShort || g.chapters) + '<span class="pv-k-pg"> · ' + (pr ? pr.pct + '% прочитано' : g.pages + ' стр.') + '</span></small></span><span style="display:flex;align-items:center;gap:10px">' + right + '<span class="pv-k-t pv-go">' + (x.cont ? 'Продолжить ↵' : 'Открыть ↵') + '</span></span></a>';
+            var right = x.tag ? '<span class="pv-k-t pv-k-t2">#' + esc(x.tag) + '</span>' : pr ? '<span class="pv-k-t2" style="display:flex;align-items:center;gap:8px"><span class="pv-prog" style="width:48px"><i style="width:' + pr.pct + '%;background:' + accentOf(g) + '"></i></span><span class="pv-k-t">' + pr.pct + '%</span></span>' : '';
+            html += '<a class="pv-k-r pv-row" role="option" data-id="' + esc(g.id) + '" data-i="' + rows.length + '" href="' + esc(href) + '"><span class="pv-k-sw" style="background:' + accentOf(g) + '">' + esc(g.cat.slice(0, 1)) + '</span><span style="min-width:0"><b>' + hl(g.title, ws) + '</b><small>' + esc(g.level) + ' · ' + esc(g.forShort || g.chapters) + '</small></span><span style="display:flex;align-items:center;gap:10px">' + right + '<span class="pv-k-t pv-go">' + (x.cont ? 'Продолжить ↵' : 'Открыть ↵') + '</span></span></a>';
             rows.push(g);
           });
         });
@@ -562,6 +563,18 @@
         if (chips) [].forEach.call(chips.querySelectorAll('button'), function (b) { b.onclick = function () { cur = b.getAttribute('data-c'); sel = 0; draw(); }; });
         [].forEach.call(lst.querySelectorAll('[data-s]'), function (b) { b.onclick = function () { inp.value = b.getAttribute('data-s'); cur = 'all'; sel = 0; draw(); inp.focus(); }; });
       }
+      var fb = el.querySelector('.pv-fbtn'), lastFound = list;
+      if (fb) fb.onclick = function (ev) {
+        ev.preventDefault(); inp.blur();
+        var opts = [['all', 'Все направления', lastFound.length]].concat(cats.map(function (c) { return [c, c, lastFound.filter(function (x) { return x.g.cat === c; }).length]; }));
+        var sh = document.createElement('div'); sh.className = 'pv-sheet'; sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-label', 'Направление');
+        sh.innerHTML = '<div class="pv-sheet-p" style="max-height:80vh;overflow:auto"><div class="pv-sheet-h"></div><div style="font:700 20px/1.1 ' + UI + ';letter-spacing:-.03em;margin:0 4px 6px">Направление</div>' + opts.map(function (c) { return '<button type="button" class="pv-opt" role="radio" data-c="' + esc(c[0]) + '" aria-checked="' + (cur === c[0]) + '"' + (c[2] || c[0] === 'all' ? '' : ' style="opacity:.4"') + '><i></i>' + esc(c[1]) + '<span style="margin-left:auto;font-family:' + MONO + ';font-size:12px;opacity:.5">' + c[2] + '</span></button>'; }).join('') + '</div>';
+        document.body.appendChild(sh); var ov = document.body.style.overflow; document.body.style.overflow = 'hidden';
+        requestAnimationFrame(function () { sh.classList.add('on'); });
+        function close() { sh.classList.remove('on'); document.body.style.overflow = ov; setTimeout(function () { sh.remove(); }, 250); }
+        sh.onclick = function (e2) { if (e2.target === sh) close(); };
+        [].forEach.call(sh.querySelectorAll('.pv-opt'), function (b) { b.onclick = function () { cur = b.getAttribute('data-c'); sel = 0; draw(); close(); }; });
+      };
       window.addEventListener('pv:cat', function (e) { var c = e.detail; if (c === 'all' || cats.indexOf(c) > -1) { cur = c; sel = 0; draw(); } });
       var tm; inp.oninput = function () { clearTimeout(tm); tm = setTimeout(function () { sel = 0; draw(); }, 80); };
       inp.onkeydown = function (e) {

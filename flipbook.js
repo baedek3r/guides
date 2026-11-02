@@ -113,7 +113,7 @@
       zoomG.style.display = S.mobile || W < 420 ? 'none' : 'flex';
       chNow.style.display = W < 520 ? 'none' : 'flex';
       
-      var canSpread = W >= 340;
+      var canSpread = W >= 340 && !S.mobile;
       viewB.style.display = canSpread && (S.full || W >= 520) ? 'inline-flex' : 'none';
       viewB.textContent = S.view === 'spread' ? 'Страница' : 'Разворот';
       S.cols = canSpread && S.view === 'spread' && S.zoom <= 1 ? 2 : 1;
@@ -123,7 +123,7 @@
       S.pageW = Math.floor(base * S.zoom);
       S.pageH = Math.floor(S.pageW / S.ratio);
       if (S.mobile && !S.full && S.zoom === 1) vp.style.height = (S.pageH + pad * 2) + 'px';
-      Object.assign(stage.style, { width: S.pageW * S.cols + 'px', height: S.pageH + 'px', margin: pad + 'px auto' });
+      Object.assign(stage.style, { width: S.pageW * S.cols + 'px', height: S.pageH + 'px', margin: S.full ? 'auto' : pad + 'px auto' });
       Object.assign(L.style, { left: 0, width: S.pageW + 'px', height: S.pageH + 'px', display: S.cols === 2 ? 'block' : 'none' });
       Object.assign(R.style, { left: (S.cols === 2 ? S.pageW : 0) + 'px', width: S.pageW + 'px', height: S.pageH + 'px' });
       spine.style.display = S.cols === 2 ? 'block' : 'none';
