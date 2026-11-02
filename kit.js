@@ -165,6 +165,20 @@
       '<div class="pv-card-b">' + pb + '<span class="pv-card-t" style="font-size:13px;line-height:1.3;font-weight:500;letter-spacing:-.015em;text-wrap:balance">' + esc(g.title) + '</span><span class="pv-card-m">' + g.pages + ' стр. · ' + esc(g.level) + '</span><span class="pv-card-go" style="margin-top:auto;font-size:13.5px;font-weight:600;letter-spacing:-.01em;color:' + ACC + '">Открыть →</span></div></a>';
   }
 
+  function mountRail(el, btns) {
+    if (el.__pvr) return; el.__pvr = 1;
+    var src = el.getAttribute('data-rail-src'), page = el.getAttribute('data-guide-page') || '/guide', excl = el.getAttribute('data-exclude') || '';
+    if (!document.getElementById('pv-rail-css')) { var st = document.createElement('style'); st.id = 'pv-rail-css'; st.textContent = '.pv-rail-t{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:2px 0 6px;scroll-padding:0}.pv-rail-t::-webkit-scrollbar{display:none}.pv-rail-t>div{flex:0 0 clamp(260px,calc((100% - 48px)/4),360px);scroll-snap-align:start;display:flex}.pv-rail-t>div>*{flex:1;min-width:0}.pv-rail-b{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid ' + RULE + ';background:transparent;color:' + INK + ';font-size:17px;line-height:1;cursor:pointer;transition:background .15s,opacity .15s}.pv-rail-b:hover:not(:disabled){background:' + INK + ';color:#fff;border-color:' + INK + '}.pv-rail-b:disabled{opacity:.3;cursor:default}'; document.head.appendChild(st); }
+    el.innerHTML = '<div class="pv-mono" style="font-size:11px;color:' + MUTED + '">Загружаем каталог…</div>';
+    catalog(src).then(function (list) {
+      var tot = list.total, L = list.filter(function (g) { return g.id !== excl; });
+      el.innerHTML = '<div class="pv-rail-t">' + L.map(function (g) { return '<div>' + card(g, tot, page) + '</div>'; }).join('') + '</div>';
+      var t = el.firstChild;
+      function upd() { var mx = t.scrollWidth - t.clientWidth - 4; [].forEach.call(btns, function (b) { b.disabled = +b.getAttribute('data-d') < 0 ? t.scrollLeft <= 4 : t.scrollLeft >= mx; }); }
+      [].forEach.call(btns, function (b) { b.onclick = function () { var c = t.firstChild; if (!c) return; t.scrollBy({ left: +b.getAttribute('data-d') * (c.getBoundingClientRect().width + 16), behavior: 'smooth' }); }; });
+      t.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd); upd();
+    }).catch(function (e) { console.warn('[pv]', e); el.innerHTML = ''; });
+  }
   function mountCatalog(el) {
     var src = el.getAttribute('data-catalog');
     if (el.__pv === src) return; el.__pv = src;
@@ -271,8 +285,8 @@
           '<div style="min-width:0"><div style="display:flex;justify-content:space-between;gap:12px;padding:0 0 18px;align-items:baseline"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1.05;letter-spacing:-.05em;white-space:nowrap">Читать онлайн</span></div><div data-flipbook="' + esc(g.pdfUrl) + '" data-title="' + esc(g.title) + '" data-height="240px" data-view="spread"' + (pr && pr.pct < 98 ? ' data-start="' + pr.p + '"' : '') + '></div></div>' +
           (g.testUrl ? '<aside id="pv-test" class="pv-side"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 0 18px;align-items:baseline"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Тестирование</span></div><div data-quiz="' + esc(g.testUrl) + '" data-accent="' + esc(accentOf(g)) + '"></div></aside>' : '') +
         '</section>' +
-        (others.length ? '<section style="padding:clamp(28px,3.4vw,48px) 0 0;border-top:1px solid ' + RULE + '"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:18px"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Другие гайды</span><a class="pv-btn line" href="' + esc(back) + '" style="padding:11px 18px;font-size:13.5px">Весь каталог</a></div><div class="pv-more" data-catalog="' + esc(src) + '" data-guide-page="' + esc(page) + '" data-exclude="' + esc(g.id) + '" data-per-page="' + esc(el.getAttribute('data-more-per-page') || '8') + '"></div></section>' : '');
-      var more = el.querySelector('.pv-more'); if (more) mountCatalog(more);
+        (others.length ? '<section style="padding:clamp(28px,3.4vw,48px) 0 0;border-top:1px solid ' + RULE + '"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 16px;margin-bottom:18px"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em;white-space:nowrap">Другие гайды</span><div style="display:flex;align-items:center;gap:8px"><button type="button" class="pv-rail-b" data-d="-1" aria-label="Предыдущий гайд">←</button><button type="button" class="pv-rail-b" data-d="1" aria-label="Следующий гайд">→</button><a class="pv-btn line" href="' + esc(back) + '" style="padding:11px 18px;font-size:13.5px;margin-left:6px">Весь каталог</a></div></div><div class="pv-rail" data-rail-src="' + esc(src) + '" data-guide-page="' + esc(page) + '" data-exclude="' + esc(g.id) + '"></div></section>' : '');
+      var more = el.querySelector('.pv-rail'); if (more) mountRail(more, el.querySelectorAll('.pv-rail-b'));
       el.addEventListener('pv:page', function (e) { var d = e.detail || {}; if (d.total && d.page) saveProg(g.id, d.page, d.total); });
       [].forEach.call(el.querySelectorAll('[data-jump]'), function (a) {
         a.onclick = function (e) { var t = document.getElementById(a.getAttribute('data-jump')); if (!t) return; e.preventDefault(); window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' }); };
@@ -487,6 +501,7 @@
       list.forEach(function (g) { if (!g.hay) g.hay = nrm([g.title, g.cat, g.big1, g.big2, g.sub, g.lead, g.forShort, g.forWho, g.level, g.caseName, g.teamText, (g.tags || []).join(' ')].join(' ')); });
       var cats = []; list.forEach(function (g) { if (cats.indexOf(g.cat) < 0) cats.push(g.cat); });
       var cur = 'all', sel = 0, rows = [];
+      try { var qc = new URLSearchParams(location.search).get('cat'); if (qc && cats.indexOf(qc) > -1) cur = qc; } catch (e) {}
       el.innerHTML = '<div class="pv-Lw"><div class="pv-L"><label class="pv-k-i" style="background:var(--pv-card);z-index:2"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="color:var(--pv-muted)"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg><input type="search" enterkeyhint="search" autocomplete="off" spellcheck="false" placeholder="Профессия, навык или термин: SQL, LTV, Figma…" aria-label="Поиск по гайдам"></label>' +
         (cats.length > 1 ? '<div class="pv-Lc" role="group" aria-label="Категории"></div>' : '') +
         '<div class="pv-k-l" role="listbox"></div>' +
@@ -547,6 +562,7 @@
         if (chips) [].forEach.call(chips.querySelectorAll('button'), function (b) { b.onclick = function () { cur = b.getAttribute('data-c'); sel = 0; draw(); }; });
         [].forEach.call(lst.querySelectorAll('[data-s]'), function (b) { b.onclick = function () { inp.value = b.getAttribute('data-s'); cur = 'all'; sel = 0; draw(); inp.focus(); }; });
       }
+      window.addEventListener('pv:cat', function (e) { var c = e.detail; if (c === 'all' || cats.indexOf(c) > -1) { cur = c; sel = 0; draw(); } });
       var tm; inp.oninput = function () { clearTimeout(tm); tm = setTimeout(function () { sel = 0; draw(); }, 80); };
       inp.onkeydown = function (e) {
         if (e.key === 'ArrowDown') { e.preventDefault(); if (rows.length) { sel = (sel + 1) % rows.length; mark(true); } }
@@ -605,7 +621,7 @@
   function mountType(el) {
     if (el.__pvt2) return; el.__pvt2 = 1;
     var pre = el.getAttribute('data-prefix') || 'Гайды по профессиям, ', base = el.getAttribute('data-base') || '#ff2a1f';
-    var hold = +(el.getAttribute('data-hold') || 6000), P = TYPE_DEF;
+    var hold = +(el.getAttribute('data-hold') || 2500), P = TYPE_DEF;
     try { var cu = JSON.parse(el.getAttribute('data-phrases') || 'null'); if (cu && cu.length) P = cu; } catch (e) {}
     el.setAttribute('aria-label', pre + P[0][0] + P[0][1]);
     el.innerHTML = '';
@@ -625,8 +641,10 @@
       while (letters.length < p2.length) { var L = document.createElement('span'); L.textContent = p2[letters.length]; L.style.transition = 'color .6s cubic-bezier(.3,.7,.3,1)'; hi.appendChild(L); letters.push(L); }
     }
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var pi = 0; paint(0); setText(P[0][0].length + P[0][1].length, P[0]);
-    if (reduce) { car.style.display = 'none'; return; }
+    var pi = Math.floor(Math.random() * P.length), first = true; paint(pi);
+    el.setAttribute('aria-label', pre + P[pi][0] + P[pi][1]);
+    if (reduce) { setText(P[pi][0].length + P[pi][1].length, P[pi]); car.style.display = 'none'; return; }
+    setText(0, P[pi]);
     // flicker: one letter at a time
     (function flick() {
       return;
@@ -639,13 +657,18 @@
     function steady(on) { car.style.animation = on ? 'pvCaret 1s steps(1) infinite' : 'none'; car.style.opacity = '1'; }
     (async function loop() {
       while (el.isConnected) {
-        steady(true); await wait(hold); await vis();
-        var ph = P[pi], n = ph[0].length + ph[1].length; steady(false);
-        while (n > 0) { n--; setText(n, ph); await wait(10); }
-        await wait(180);
-        pi = (pi + 1) % P.length; ph = P[pi]; paint(pi); var tot = ph[0].length + ph[1].length;
+        var ph = P[pi];
+        if (first) { first = false; steady(true); await wait(450); await vis(); }
+        else {
+          steady(true); await wait(hold); await vis();
+          var n = ph[0].length + ph[1].length; steady(false);
+          while (n > 0) { n--; setText(n, ph); await wait(9); }
+          await wait(160);
+          pi = (pi + 1) % P.length; ph = P[pi]; paint(pi);
+        }
+        steady(false); var tot = ph[0].length + ph[1].length;
         el.setAttribute('aria-label', pre + ph[0] + ph[1]);
-        for (var i = 1; i <= tot; i++) { setText(i, ph); var ch = (ph[0] + ph[1])[i - 1]; await wait(ch === ' ' ? 40 + Math.random() * 30 : ch === ',' ? 140 : 24 + Math.random() * 22); }
+        for (var i = 1; i <= tot; i++) { setText(i, ph); var ch = (ph[0] + ph[1])[i - 1]; await wait(ch === ' ' ? 34 + Math.random() * 24 : ch === ',' ? 120 : 20 + Math.random() * 18); }
       }
     })();
   }
