@@ -66,6 +66,7 @@
     var fsB = btn('⤢', { padding: 0, width: '30px' }, { 'aria-label': 'На весь экран', title: 'На весь экран' });
     var dl = h('a', { height: '30px', width: '30px', justifyContent: 'center', padding: 0, display: 'inline-flex', alignItems: 'center', borderRadius: '999px', background: INK, color: '#fff', font: '600 12px/1 ' + UI, letterSpacing: '-.01em', textDecoration: 'none', whiteSpace: 'nowrap', transition: 'background .15s' }, { class: 'fb-dl', title: 'Скачать PDF', 'aria-label': 'Скачать PDF', href: url, download: '', target: '_blank', rel: 'noopener', text: '↓' });
     
+    if (root.hasAttribute('data-free-chapters') || root.hasAttribute('data-free-pages')) { dl.removeAttribute('href'); dl.removeAttribute('download'); dl.style.display = 'none'; }
     var bar = h('div', { position: 'relative', zIndex: 4, display: 'flex', alignItems: 'center', gap: '8px', padding: '8px', borderBottom: '1px solid #efedf3', background: '#fff', flexWrap: 'nowrap', gap: '6px' }, null, [chBtn, zoomG, viewB, fsB, dl]);
 
     /* chapters dropdown */
@@ -217,7 +218,7 @@
       spine.style.display = S.cols === 2 && !solo ? 'block' : 'none';
     }
     function show(p) {
-      S.cur = p;
+      S.cur = p = Math.max(1, Math.min(S.total, p | 0));
       var pr = pagesFor(p);
       center(pr);
       ui();
@@ -423,9 +424,21 @@
       return d.getPage(1).then(function (p1) {
         var v = p1.getViewport({ scale: 1 }); S.ratio = v.width / v.height;
         loader.remove();
-        S.cur = Math.max(1, Math.min(S.total, +(root.getAttribute('data-start') || 1)));
-        layout();
-        return detectChapters().then(function (c) { S.chapters = c; buildMenu(); });
+        var fc = +root.getAttribute('data-free-chapters') || 0, fp = +root.getAttribute('data-free-pages') || 0;
+        if (!fc && !fp) {
+          S.cur = Math.max(1, Math.min(S.total, +(root.getAttribute('data-start') || 1)));
+          layout();
+          return detectChapters().then(function (c) { S.chapters = c; buildMenu(); });
+        }
+        return detectChapters().catch(function () { return []; }).then(function (c) {
+          var num = c.filter(function (x) { return /^\d+$/.test(x.n); }).sort(function (a, b) { return a.p - b.p; });
+          var lim = fc && num.length > fc ? num[fc].p - 1 : fp || Math.max(4, Math.round(S.total * .15));
+          S.total = Math.max(1, Math.min(S.total, lim));
+          S.chapters = c.filter(function (x) { return x.p <= S.total; });
+          S.cur = Math.max(1, Math.min(S.total, +(root.getAttribute('data-start') || 1)));
+          layout(); buildMenu();
+          root.dispatchEvent(new CustomEvent('fb:limit', { bubbles: true, detail: { pages: S.total, full: d.numPages } }));
+        });
       });
     }).catch(function (err) {
       console.warn('[flipbook]', err);

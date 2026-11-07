@@ -1,4 +1,17 @@
 {
+ "shop": {
+  "on": false,
+  "price": 6990,
+  "priceOld": 0,
+  "freeChapters": 3,
+  "bundlePrice": 29990,
+  "payBase": "",
+  "bundlePay": "",
+  "leadUrl": "",
+  "email": "galiahno@mail.ru",
+  "privacyUrl": "privacy.html",
+  "buyNote": "PDF придёт на почту сразу после оплаты, чек — туда же."
+ },
  "guides": [
   {
    "id": "crm",

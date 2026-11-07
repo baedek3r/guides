@@ -68,6 +68,11 @@
     '.pv-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;font:500 13.5px/1 ' + UI + ';letter-spacing:-.01em;border:0;border-radius:8px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}',
     '.pv-btn.dark{background:' + INK + ';color:var(--pv-bg,#fff)!important}.pv-btn.dark:hover{background:var(--pv-soft,#2e2c34);border-color:var(--pv-soft,#2e2c34)}',
     '.pv-btn.line{background:var(--pv-chip,#e9e7ee);color:' + INK + '!important}.pv-btn.line:hover{background:var(--pv-chip-h,#dddae3)}',
+    '.pv-buy{display:flex;flex-direction:column;gap:14px;padding:18px 20px;background:' + CARD + ';border-radius:10px}.pv-price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.pv-price b{font-size:30px;line-height:1;font-weight:700;letter-spacing:-.04em}.pv-price s{font-size:16px;color:' + MUTED + '}.pv-note{font-size:12.5px;line-height:1.45;color:' + MUTED + '}',
+    '.pv-end{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;margin-top:16px;padding:16px 18px;border-radius:10px;background:' + CARD + '}',
+    '.pv-bundle{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 32px;align-items:center;padding:clamp(20px,2.6vw,32px);margin:8px 0 clamp(28px,3.4vw,48px);border-radius:12px;background:' + INK + ';color:var(--pv-bg,#fff)}.pv .pv-bundle .pv-btn{background:var(--pv-bg,#fff);color:' + INK + '!important}.pv .pv-bundle .pv-btn:hover{background:var(--pv-chip,#e9e7ee)}@media (max-width:680px){.pv-bundle{grid-template-columns:minmax(0,1fr)}}',
+    '.pv-lm .pv-sheet-p{padding:18px 18px calc(20px + env(safe-area-inset-bottom))}@media (min-width:641px){.pv-sheet.pv-lm{align-items:center;justify-content:center;padding:20px}.pv-lm .pv-sheet-p{max-width:420px;border-radius:14px;padding:24px;transform:translateY(12px);opacity:0;transition:transform .2s,opacity .2s}.pv-sheet.on.pv-lm .pv-sheet-p{transform:none;opacity:1}.pv-lm .pv-sheet-h{display:none}}',
+    '.pv-lm input[type=email]{width:100%;height:46px;padding:0 14px;border:1px solid ' + RULE + ';border-radius:8px;background:var(--pv-bg,#f7f6f9);font:500 16px/1 ' + UI + ';color:' + INK + ';outline:0;-webkit-appearance:none}.pv-lm input[type=email]:focus{border-color:' + INK + '}.pv-lm label{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.4;color:' + MUTED + '}.pv-lm label a{color:inherit;text-decoration:underline}.pv-lm .pv-btn{justify-content:center;height:46px;font-size:15px}',
     '.pv-hero{display:grid;grid-template-columns:minmax(180px,250px) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:start}',
     '.pv-spec{display:grid;grid-template-columns:minmax(90px,140px) minmax(0,1fr);gap:14px;padding:12px 0;border-bottom:1px solid var(--pv-chip,#efedf3);align-items:baseline}.pv-spec:last-child{border-bottom:0}',
     '.pv-ws{display:grid;grid-template-columns:calc(400px + clamp(24px,3vw,48px)) minmax(0,1fr);gap:0;align-items:stretch}.pv-ws>div:first-child{padding-right:clamp(24px,3vw,48px)}.pv-ws>.pv-side{padding-left:clamp(24px,3vw,48px);border-left:1px solid ' + RULE + '}',
@@ -122,16 +127,29 @@
   function saveProg(id, p, total) { try { var a = progAll(); a[id] = { p: p, total: total, t: Date.now() }; localStorage.setItem(PK, JSON.stringify(a)); } catch (e) {} }
   function quizBest(g) { try { return g.testUrl ? +localStorage.getItem('quiz-best:' + g.testUrl) || 0 : 0; } catch (e) { return 0; } }
   function fmt(n) { return Number(n).toLocaleString('ru-RU'); }
+  function shPay(base, name, price, sku) { return base ? base + (base.indexOf('?') < 0 ? '?' : '&') + 'do=pay&products[0][name]=' + encodeURIComponent(name) + '&products[0][price]=' + price + '&products[0][quantity]=1&products[0][sku]=' + encodeURIComponent(sku) : ''; }
+  function shRub(n) { return fmt(n) + ' ₽'; }
+  function shPl(n, a, b, c) { n = Math.abs(n) % 100; var m = n % 10; return n > 10 && n < 20 ? c : m === 1 ? a : m > 1 && m < 5 ? b : c; }
+  var LK = 'pv-lead';
+  function shMail() { try { return localStorage.getItem(LK) || ''; } catch (e) { return ''; } }
+  function shWith(u) { var m = shMail(); return u && m && /^https?:/.test(u) && u.indexOf('customer_email=') < 0 ? u + (u.indexOf('?') < 0 ? '?' : '&') + 'customer_email=' + encodeURIComponent(m) : u; }
+  function shBuy(u, shop, what) { return shWith(u) || 'mailto:' + (shop.email || '') + '?subject=' + encodeURIComponent('Покупка: ' + what); }
   function readTime(g) { var m = Math.round((+g.pages || 0) * 2.5); return m < 60 ? m + ' мин' : '≈ ' + (Math.round(m / 30) / 2).toString().replace('.', ',') + ' ч'; }
   function catalog(url) {
     url = new URL(url, location.href).href;
     if (!cache[url]) cache[url] = fetch(url, { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
-      var list = (d.guides || d).filter(function (g) { return !g.hidden; });
+      var list = (d.guides || d).filter(function (g) { return !g.hidden; }), shop = d.shop || {}; list.shop = shop;
       list.forEach(function (g, i) {
         g.idx = String(i + 1).padStart(2, '0');
         g.pdfUrl = new URL(g.pdf, url).href; g.pdfName = 'sherpa — ' + g.title.replace(/[\\/:*?"<>|]/g, ' ').replace(/\s+/g, ' ').trim() + '.pdf'; PDF_NAMES[g.pdfUrl] = g.pdfName;
         g.testUrl = g.test ? new URL(g.test, url).href : '';
         g.teamText = (g.team || []).join(', ');
+        if (shop.on && !g.free) {
+          g.price = +(g.price || shop.price) || 0; g.priceOld = +(g.priceOld || shop.priceOld) || 0; g.freeCh = +(g.freeChapters || shop.freeChapters) || 3;
+          g.previewUrl = g.preview ? new URL(g.preview, url).href : '';
+          if (g.previewUrl) { g.previewName = g.pdfName.replace(/\.pdf$/, ' — бесплатные главы.pdf'); PDF_NAMES[g.previewUrl] = g.previewName; }
+          g.payUrl = g.pay || shPay(shop.payBase, 'Гайд «' + g.title + '»', g.price, g.id);
+        } else { g.price = 0; }
         g.href = ''; PVG[g.id] = g;
       });
       list.total = list.length;
@@ -269,6 +287,16 @@
         '<div style="grid-column:1/-1"><span class="pv-mono" style="font-size:10px;color:' + MUTED + '">Чаще всего просят</span><span style="display:flex;gap:6px;flex-wrap:wrap">' + (mk.skills || []).map(function (s) { return '<span class="pv-tag">' + esc(s) + '</span>'; }).join('') + '</span></div>' +
         '</div></div>' : '';
       var cont = pr && pr.pct < 98 ? '<a class="pv-btn line" href="#pv-read" data-jump="pv-read">Продолжить · стр. ' + pr.p + '</a>' : '';
+      var shop = list.shop || {}, paid = !!g.price, freeL = paid ? g.freeCh + ' ' + shPl(g.freeCh, 'глава', 'главы', 'глав') : '', buy = paid ? shBuy(g.payUrl, shop, 'гайд «' + g.title + '»') : '';
+      var actions = paid ?
+        '<div class="pv-buy"><div class="pv-price"><b>' + shRub(g.price) + '</b>' + (g.priceOld > g.price ? '<s>' + shRub(g.priceOld) + '</s>' : '') + '<span class="pv-note">полный гайд · ' + esc(g.pages) + ' стр.</span></div>' +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="pv-btn dark" href="' + esc(buy) + '" data-buy target="_blank" rel="noopener">Купить гайд</a><button type="button" class="pv-btn line" data-lead>' + freeL + ' бесплатно</button>' + cont + '</div>' +
+        (shop.buyNote ? '<span class="pv-note">' + esc(shop.buyNote) + '</span>' : '') + '</div>' :
+        '<div style="display:flex;gap:10px;flex-wrap:wrap">' + cont + '<a class="pv-btn dark" href="' + esc(g.pdfUrl) + '" download="' + esc(g.pdfName) + '" data-filename="' + esc(g.pdfName) + '" target="_blank" rel="noopener">Скачать PDF</a></div>';
+      var endCard = paid ? '<div class="pv-end"><span style="font-size:14.5px;line-height:1.45;max-width:42ch;text-wrap:pretty">Это бесплатная часть — ' + freeL + '. В полной версии ' + esc(g.pages) + ' стр. · ' + esc(g.chapters) + '.</span><a class="pv-btn dark" href="' + esc(buy) + '" data-buy target="_blank" rel="noopener">Купить · ' + shRub(g.price) + '</a></div>' : '';
+      var bp = +shop.bundlePrice || 0, bsum = list.reduce(function (s, x) { return s + (x.price || 0); }, 0);
+      var bundle = paid && bp && bsum > bp ? '<div class="pv-bundle"><div style="display:flex;flex-direction:column;gap:8px;min-width:0"><span class="pv-mono" style="font-size:10px;opacity:.7">Все гайды сразу</span><span style="font-weight:700;font-size:clamp(24px,2.6vw,34px);line-height:1.05;letter-spacing:-.04em;text-wrap:balance">' + list.total + ' ' + shPl(list.total, 'гайд', 'гайда', 'гайдов') + ' за ' + shRub(bp) + '</span><span style="font-size:14.5px;line-height:1.45;opacity:.75">Вместо ' + shRub(bsum) + ' по отдельности.' + (shop.bundleNote ? ' ' + esc(shop.bundleNote) : '') + '</span></div><a class="pv-btn" href="' + esc(shBuy(shop.bundlePay || shPay(shop.payBase, 'Все гайды sherpa.', bp, 'all'), shop, 'все гайды')) + '" data-buy target="_blank" rel="noopener" style="padding:14px 22px;font-size:15px;justify-content:center">Купить все · ' + shRub(bp) + '</a></div>' : '';
+      var fbSrc = paid && g.previewUrl ? g.previewUrl : g.pdfUrl, fbLim = paid && !g.previewUrl ? ' data-free-chapters="' + g.freeCh + '"' : '';
       var stat = pr || qb ? '<div style="display:flex;gap:16px;flex-wrap:wrap;font:500 11px/1.4 ' + MONO + ';color:' + MUTED + '">' + (pr ? '<span style="display:flex;align-items:center;gap:8px"><span class="pv-prog" style="width:80px"><i style="width:' + pr.pct + '%;background:' + accentOf(g) + '"></i></span>Прочитано ' + pr.pct + '%</span>' : '') + (qb ? '<span>Тест: лучший результат ' + qb + '%</span>' : '') + '</div>' : '';
       el.innerHTML =
         '<section class="pv-hero" style="padding-bottom:clamp(24px,3vw,40px);border-bottom:1px solid ' + RULE + '">' +
@@ -278,21 +306,58 @@
             '<h1 style="margin:0;font-family:' + UI + ';font-weight:700;font-size:clamp(32px,4vw,56px);line-height:1;letter-spacing:-.05em;text-wrap:balance">' + esc(g.title) + '</h1>' +
             (g.lead ? '<p style="margin:0;max-width:62ch;font-size:15.5px;line-height:1.55;text-wrap:pretty">' + esc(g.lead) + '</p>' : '') +
             '<div style="background:' + CARD + ';border-radius:10px;padding:6px 20px">' + specs.map(function (s) { return '<div class="pv-spec"><span class="pv-mono" style="font-size:10px;color:' + MUTED + '">' + s[0] + '</span><span style="font-size:14.5px;line-height:1.45">' + esc(s[1]) + '</span></div>'; }).join('') + '</div>' +
-            pulse + '<div style="display:flex;gap:10px;flex-wrap:wrap">' + cont + '<a class="pv-btn dark" href="' + esc(g.pdfUrl) + '" download="' + esc(g.pdfName) + '" data-filename="' + esc(g.pdfName) + '" target="_blank" rel="noopener">Скачать PDF</a></div>' + stat +
+            pulse + actions + stat +
           '</div>' +
         '</section>' +
         '<section id="pv-read" class="pv-ws" style="padding:clamp(20px,2.6vw,32px) 0">' +
-          '<div style="min-width:0"><div style="display:flex;justify-content:space-between;gap:12px;padding:0 0 18px;align-items:baseline"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1.05;letter-spacing:-.05em;white-space:nowrap">Читать онлайн</span></div><div data-flipbook="' + esc(g.pdfUrl) + '" data-title="' + esc(g.title) + '" data-height="240px" data-view="spread"' + (pr && pr.pct < 98 ? ' data-start="' + pr.p + '"' : '') + '></div></div>' +
+          '<div style="min-width:0"><div style="display:flex;justify-content:space-between;gap:12px;padding:0 0 18px;align-items:baseline"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1.05;letter-spacing:-.05em;white-space:nowrap">Читать онлайн</span>' + (paid ? '<span class="pv-mono" style="font-size:10px;color:' + MUTED + '">Бесплатно · ' + freeL + '</span>' : '') + '</div><div data-flipbook="' + esc(fbSrc) + '"' + fbLim + ' data-title="' + esc(g.title) + '" data-height="240px" data-view="spread"' + (pr && pr.pct < 98 ? ' data-start="' + pr.p + '"' : '') + '></div>' + endCard + '</div>' +
           (g.testUrl ? '<aside id="pv-test" class="pv-side"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 0 18px;align-items:baseline"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em">Тестирование</span></div><div data-quiz="' + esc(g.testUrl) + '" data-accent="' + esc(accentOf(g)) + '"></div></aside>' : '') +
         '</section>' +
-        (others.length ? '<section style="padding:clamp(28px,3.4vw,48px) 0 0;border-top:1px solid ' + RULE + '"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 16px;margin-bottom:18px"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em;white-space:nowrap">Другие гайды</span><div style="display:flex;align-items:center;gap:8px"><button type="button" class="pv-rail-b" data-d="-1" aria-label="Предыдущий гайд">←</button><button type="button" class="pv-rail-b" data-d="1" aria-label="Следующий гайд">→</button><a class="pv-btn line" href="' + esc(back) + '" style="padding:11px 18px;font-size:13.5px;margin-left:6px">Весь каталог</a></div></div><div class="pv-rail" data-rail-src="' + esc(src) + '" data-guide-page="' + esc(page) + '" data-exclude="' + esc(g.id) + '"></div></section>' : '');
+        bundle + (others.length ? '<section style="padding:clamp(28px,3.4vw,48px) 0 0;border-top:1px solid ' + RULE + '"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 16px;margin-bottom:18px"><span style="font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1;letter-spacing:-.05em;white-space:nowrap">Другие гайды</span><div style="display:flex;align-items:center;gap:8px"><button type="button" class="pv-rail-b" data-d="-1" aria-label="Предыдущий гайд">←</button><button type="button" class="pv-rail-b" data-d="1" aria-label="Следующий гайд">→</button><a class="pv-btn line" href="' + esc(back) + '" style="padding:11px 18px;font-size:13.5px;margin-left:6px">Весь каталог</a></div></div><div class="pv-rail" data-rail-src="' + esc(src) + '" data-guide-page="' + esc(page) + '" data-exclude="' + esc(g.id) + '"></div></section>' : '');
       var more = el.querySelector('.pv-rail'); if (more) mountRail(more, el.querySelectorAll('.pv-rail-b'));
       el.addEventListener('pv:page', function (e) { var d = e.detail || {}; if (d.total && d.page) saveProg(g.id, d.page, d.total); });
       [].forEach.call(el.querySelectorAll('[data-jump]'), function (a) {
         a.onclick = function (e) { var t = document.getElementById(a.getAttribute('data-jump')); if (!t) return; e.preventDefault(); window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' }); };
       });
-      load(BASE + 'flipbook.js?v=19'); if (g.testUrl) load(BASE + 'quiz.js?v=18');
+      [].forEach.call(el.querySelectorAll('[data-lead]'), function (b) {
+        b.onclick = function () { if (g.previewUrl || shop.leadUrl) return leadForm(g, shop, freeL); var t = document.getElementById('pv-read'); if (t) window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' }); };
+      });
+      load(BASE + 'flipbook.js?v=21'); if (g.testUrl) load(BASE + 'quiz.js?v=18');
     }).catch(function (e) { console.warn('[pv]', e); el.innerHTML = '<div class="pv-mono" style="font-size:11px;color:' + MUTED + '">Не удалось загрузить гайд</div>'; });
+  }
+
+  function leadForm(g, shop, freeL) {
+    var ov = document.body.style.overflow, sh = document.createElement('div'); sh.className = 'pv-sheet pv-lm';
+    var X = '<button type="button" data-x aria-label="Закрыть" style="flex:none;width:32px;height:32px;border:0;border-radius:50%;background:var(--pv-chip,#efedf3);color:' + INK + ';cursor:pointer;font:500 18px/1 ' + UI + '">×</button>';
+    var H = function (t) { return '<div class="pv-sheet-h"></div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><span style="font-weight:700;font-size:24px;line-height:1.1;letter-spacing:-.04em;text-wrap:balance">' + t + '</span>' + X + '</div>'; };
+    sh.innerHTML = '<form class="pv-sheet-p" novalidate style="display:flex;flex-direction:column;gap:14px">' + H(freeL.charAt(0).toUpperCase() + freeL.slice(1) + ' бесплатно') +
+      '<span style="font-size:14.5px;line-height:1.5;color:' + MUTED + ';text-wrap:pretty">«' + esc(g.title) + '». ' + (g.previewUrl ? 'Оставьте почту — файл скачается сразу' + (shop.leadUrl ? ', копия придёт на почту.' : '.') : 'Оставьте почту — пришлём главы в PDF.') + '</span>' +
+      '<input type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@mail.ru" value="' + esc(shMail()) + '">' +
+      '<label><input type="checkbox" name="ok" checked style="margin:2px 0 0;flex:none"><span>Согласен на обработку персональных данных по <a href="' + esc(shop.privacyUrl || 'privacy.html') + '" target="_blank" rel="noopener">политике конфиденциальности</a></span></label>' +
+      '<span data-err style="display:none;font-size:13px;color:#d52d1a"></span><button type="submit" class="pv-btn dark">Получить главы</button></form>';
+    document.body.appendChild(sh); document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function () { sh.classList.add('on'); });
+    var f = sh.firstChild, inp = f.querySelector('input[type=email]'), err = f.querySelector('[data-err]'), btn = f.querySelector('[type=submit]');
+    function close() { sh.classList.remove('on'); document.body.style.overflow = ov; document.removeEventListener('keydown', key); setTimeout(function () { sh.remove(); }, 250); }
+    function key(e) { if (e.key === 'Escape') close(); }
+    document.addEventListener('keydown', key);
+    sh.onclick = function (e) { if (e.target === sh || (e.target.closest && e.target.closest('[data-x]'))) close(); };
+    if (matchMedia('(hover:hover)').matches) setTimeout(function () { inp.focus(); }, 80);
+    f.onsubmit = function (e) {
+      e.preventDefault();
+      var v = inp.value.trim();
+      function bad(t) { err.textContent = t; err.style.display = 'block'; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { bad('Проверьте адрес почты'); inp.focus(); return; }
+      if (!f.ok.checked) return bad('Нужно согласие на обработку данных');
+      err.style.display = 'none'; btn.disabled = true; btn.style.opacity = '.6'; btn.textContent = 'Отправляем…';
+      try { localStorage.setItem(LK, v); } catch (x) {}
+      (shop.leadUrl ? fetch(shop.leadUrl, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ email: v, guide: g.id, title: g.title, page: location.href }) }).catch(function () {}) : Promise.resolve()).then(function () {
+        if (g.previewUrl) { var a = document.createElement('a'); a.href = g.previewUrl; a.download = g.previewName; a.setAttribute('data-filename', g.previewName); document.body.appendChild(a); a.click(); a.remove(); }
+        [].forEach.call(document.querySelectorAll('a[data-buy]'), function (b) { b.href = shWith(b.getAttribute('href')); });
+        f.innerHTML = H('Готово') + '<span style="font-size:14.5px;line-height:1.5;color:' + MUTED + ';text-wrap:pretty">' + (g.previewUrl ? 'Файл скачивается.' + (shop.leadUrl ? ' Копию отправили на ' + esc(v) + '.' : '') : 'Отправили главы на ' + esc(v) + '.') + ' Понравится — полная версия за ' + shRub(g.price) + '.</span>' +
+          '<a class="pv-btn dark" href="' + esc(shBuy(g.payUrl, shop, 'гайд «' + g.title + '»')) + '" target="_blank" rel="noopener">Купить гайд</a>';
+      });
+    };
   }
 
   function mountStats(el) {
