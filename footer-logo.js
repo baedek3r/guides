@@ -21,11 +21,30 @@ const IDLE = {
   wave: [{ transform: 'skewY(0deg) scaleX(1)' }, { transform: 'skewY(9deg) scaleX(.82)' }, { transform: 'skewY(0deg) scaleX(1)' }],
 };
 
+  function scrib(root) {
+    var gs = root.querySelectorAll('svg[data-g]'), LET = 'SHERPA', seed = 7, i;
+    if (gs.length !== 6 || root.__scr) return; root.__scr = 1;
+    function rnd() { seed = seed * 16807 % 2147483647; return seed / 2147483647; }
+    if (!document.getElementById('pv-poppins')) { var l = document.createElement('link'); l.id = 'pv-poppins'; l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@900&text=SHERPA&display=swap'; document.head.appendChild(l); }
+    var fs = root.querySelector('div[style*="cqw"]'); if (fs) fs.style.fontSize = 'min(16cqw,240px)';
+      
+      [].forEach.call(root.querySelectorAll('[data-char] [stroke-width]'), function (e) { var w = parseFloat(e.getAttribute('stroke-width')); if (w > 2.4) e.setAttribute('stroke-width', (w * 0.68).toFixed(2)); });
+    var FILTER = '<filter id="pv-scrib" x="-8%" y="-4%" width="116%" height="108%"><feTurbulence type="fractalNoise" baseFrequency="0.007 0.55" numOctaves="2" seed="11" result="n"/><feColorMatrix in="n" type="matrix" values="1 0 0 0 0  0 0 0 0 .5  0 0 0 0 0  0 0 0 0 1" result="m"/><feDisplacementMap in="SourceGraphic" in2="m" scale="7" xChannelSelector="R" yChannelSelector="G"/></filter>';
+    for (i = 0; i < 6; i++) {
+      var g = gs[i], W = Math.round(+g.getAttribute('viewBox').split(' ')[2] * 1.12), s = '', y, x, k;
+      for (y = 1; y < 112; y += 2.1) { x = -rnd() * 50; while (x < W + 10) { var len = 22 + rnd() * 90; s += '<path d="M' + x.toFixed(1) + ' ' + (y + rnd() * 1.8).toFixed(1) + ' l' + len.toFixed(1) + ' ' + ((rnd() - 0.5) * 2.6).toFixed(1) + '" stroke-width="' + (0.25 + rnd() * 0.6).toFixed(2) + '"/>'; x += len + 6 + rnd() * 50; } }
+      for (k = 0; k < 110; k++) s += '<circle cx="' + (rnd() * W).toFixed(1) + '" cy="' + (rnd() * 106).toFixed(1) + '" r="' + (0.2 + rnd() * 0.35).toFixed(2) + '" fill="#141317" stroke="none"/>';
+      g.setAttribute('viewBox', '-2 -2 ' + W + ' 106');
+      g.innerHTML = '<defs><pattern id="pv-scr' + i + '" patternUnits="userSpaceOnUse" x="-10" y="-6" width="' + (W + 30) + '" height="124"><rect width="' + (W + 30) + '" height="124" fill="#f7f6f9"/><g transform="translate(10 6)" fill="none" stroke="#141317" stroke-linecap="round">' + s + '</g></pattern>' + '</defs>' +
+        '<text x="' + ((W - 4) / 2) + '" y="100" text-anchor="middle" textLength="' + (W - 6) + '" lengthAdjust="spacingAndGlyphs" font-family="Poppins,\'Archivo Black\',sans-serif" font-weight="900" font-size="143" fill="url(#pv-scr' + i + ')">' + LET[i] + '</text>';
+        var ed = g.querySelector('text').cloneNode(true); ed.setAttribute('fill', 'none'); ed.setAttribute('stroke', '#141317'); ed.setAttribute('stroke-width', '1.8'); ed.setAttribute('stroke-dasharray', '1.5 4 3 6 1 9 2.5 5'); ed.setAttribute('stroke-dashoffset', i * 7); g.appendChild(ed);
+    }
+  }
   function mount(host) {
     if (host.__sfl) return; host.__sfl = 1;
     if (!document.getElementById('sfl-css')) { var st = document.createElement('style'); st.id = 'sfl-css'; st.textContent = CSS; document.head.appendChild(st); }
     host.innerHTML = HTML;
-    var root = host.querySelector('[data-sfl]');
+    var root = host.querySelector('[data-sfl]'); scrib(root);
     var rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
     var eyes = [].slice.call(root.querySelectorAll('[data-pupil]'));
     var toys = [].slice.call(root.querySelectorAll('[data-toy]')).map(function (el) { return { el: el, x: 0, y: 0 }; });
@@ -91,20 +110,26 @@ const IDLE = {
     function startToys() {
       var layer = root.querySelector('[data-toylayer]'), ft = root.closest('footer');
       if (layer && ft) layer.style.top = (ft.getBoundingClientRect().top - layer.parentElement.getBoundingClientRect().top) + 'px';
-      var H = (layer ? layer.offsetHeight : root.offsetHeight) + 60;
+      var ln = ft ? root : null; while (ln && ln !== ft && !(parseFloat(getComputedStyle(ln).borderBottomWidth) >= 1)) ln = ln.parentElement;
+      if (layer && ln && ln !== ft) layer.style.bottom = (layer.parentElement.getBoundingClientRect().bottom - ln.getBoundingClientRect().bottom) + 'px';
+      var H = (layer ? layer.offsetHeight : root.offsetHeight) + 50;
       root.querySelectorAll('[data-toy]').forEach(function (w) {
         var f = w.firstElementChild, dur = 8000 + Math.random() * 6000, sx = rnd() * 34;
         f.getAnimations && f.getAnimations().forEach(function (a) { a.cancel(); });
+        var D = H - w.offsetHeight, a1 = rnd() * 90, a2 = rnd() * 30, end = 'translate(' + (-sx * .4) + 'px,' + D + 'px) rotate(' + a2 + 'deg)';
         f.animate([
           { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
-          { transform: 'translate(' + sx + 'px,' + (H * .5) + 'px) rotate(' + (rnd() * 90) + 'deg)', offset: .5 },
-          { opacity: 1, offset: .82 },
-          { transform: 'translate(' + (-sx) + 'px,' + H + 'px) rotate(' + (rnd() * 180) + 'deg)', opacity: 0 }
+          { transform: 'translate(' + sx + 'px,' + (D * .55) + 'px) rotate(' + a1 + 'deg)', offset: .4 },
+          { transform: end, offset: .74 },
+          { transform: 'translate(' + (-sx * .4) + 'px,' + (D - 7) + 'px) rotate(' + a2 + 'deg)', offset: .79 },
+          { transform: end, opacity: 1, offset: .84 },
+          { transform: end, opacity: 1, offset: .95 },
+          { transform: end, opacity: 0 }
         ], { duration: dur, iterations: Infinity, easing: 'linear', delay: -Math.random() * dur });
       });
     }
     startToys();
-    var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(startToys, 300); });
+    var rt, lw = window.innerWidth; window.addEventListener('resize', function () { if (window.innerWidth === lw) return; lw = window.innerWidth; clearTimeout(rt); rt = setTimeout(startToys, 300); });
     var tb = root.querySelector('#pv-wob feTurbulence'), seeds = [9, 23, 41, 57], k = 0;
     if (tb) setInterval(function () { k = (k + 1) % seeds.length; tb.setAttribute('seed', seeds[k]); }, 130);
   }
