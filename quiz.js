@@ -106,8 +106,7 @@
       });
       deco.insertBefore(h('div', { display: 'flex', gap: 'inherit', paddingLeft: '25px' }, null, ['A', 'B', 'C', 'D'].map(function (l, c) { return h('span', { width: '15px', font: '500 9px/1 ' + MONO, color: FAINT, textAlign: 'center' }, { class: c === 3 ? 'qz-c4' : '', text: l }); })), deco.firstChild);
       wrap.appendChild(deco);
-      var hd = head('Тест по гайду', ''); hd.style.position = 'relative'; wrap.appendChild(hd);
-      wrap.appendChild(h('div', { position: 'relative', margin: '34px 0 0', font: '800 clamp(48px,4.6vw,68px)/.9 ' + UI, letterSpacing: '-.055em', color: FG }, null, [
+      wrap.appendChild(h('div', { position: 'relative', margin: '0', font: '800 clamp(48px,4.6vw,68px)/.9 ' + UI, letterSpacing: '-.055em', color: FG }, null, [
         h('span', { display: 'block' }, { text: 'Проверь' }), h('span', { display: 'block', color: ACC }, { text: 'себя' })
       ]));
       wrap.appendChild(h('p', { position: 'relative', margin: '20px 0 0', maxWidth: '36ch', fontSize: '14.5px', lineHeight: 1.5, color: DIM, textWrap: 'pretty' }, { text: 'Вопросы идут по главам гайда. После каждого ответа — короткий разбор и страница, где это объясняется.' }));
